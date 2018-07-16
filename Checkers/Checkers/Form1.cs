@@ -16,5 +16,11 @@ namespace Checkers
         {
             InitializeComponent();
         }
+
+        // Exit 
+        private void Exit_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
     }
 }
