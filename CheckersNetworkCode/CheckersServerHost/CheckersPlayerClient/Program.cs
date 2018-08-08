@@ -4,11 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-using System.Net;
-using System.Net.Sockets;
-using System.Text;
-
-namespace CheckersServerHost {
+namespace CheckersPlayerClient {
     static class Program {
         /// <summary>
         /// The main entry point for the application.
@@ -17,7 +13,7 @@ namespace CheckersServerHost {
         static void Main() {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new ServerHostForm());
+            Application.Run(new PlayerClientForm());
         }
     }
 }

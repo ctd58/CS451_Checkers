@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{8CFE0BEA-C3F6-4C4A-8409-3ED23E8DEC67}</ProjectGuid>
+    <ProjectGuid>{4938421E-7D95-4FFA-845E-D064EDC4A0B2}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>CheckersServerHost</RootNamespace>
-    <AssemblyName>CheckersServerHost</AssemblyName>
+    <RootNamespace>CheckersPlayerClient</RootNamespace>
+    <AssemblyName>CheckersPlayerClient</AssemblyName>
     <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -48,16 +48,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ServerHostForm.cs">
+    <Compile Include="PlayerClientForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ServerHostForm.Designer.cs">
-      <DependentUpon>ServerHostForm.cs</DependentUpon>
+    <Compile Include="PlayerClientForm.Designer.cs">
+      <DependentUpon>PlayerClientForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="ServerHostForm.resx">
-      <DependentUpon>ServerHostForm.cs</DependentUpon>
+    <EmbeddedResource Include="PlayerClientForm.resx">
+      <DependentUpon>PlayerClientForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
