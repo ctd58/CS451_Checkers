@@ -1,35 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
 
-namespace MultiServer
-{
-    public class Game2
-    {
-        public Game2()
-        {
-
-        }
-
-        public void myMethod()
-        {
-
-        }
-    }
-
-    public class ServerCopy
-    {
+namespace MultiServer {
+    public class Server {
+        #region Attributes
         private static readonly Socket serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         private static readonly List<Socket> clientSockets = new List<Socket>();
         private const int BUFFER_SIZE = 2048;
         private const int PORT = 100;
         private static readonly byte[] buffer = new byte[BUFFER_SIZE];
-        private Game game = new Game();
 
         private bool Client1Ready = false;
         private bool Client2Ready = false;
@@ -37,25 +24,23 @@ namespace MultiServer
         private int otherPlayer = 1;
 
         public int test = 0;
+        #endregion
 
-
-        public ServerCopy()
-        {
+        #region Constructors
+        public Server() {
 
         }
+        #endregion
 
-        public void SetupServer()
-        {
+        public void SetupServer() {
             Console.WriteLine("Setting up server...");
 
             IPAddress ServerIP = null;
             IPHostEntry host;
             host = Dns.GetHostEntry(Dns.GetHostName());
 
-            foreach (IPAddress ip in host.AddressList)
-            {
-                if (ip.AddressFamily == AddressFamily.InterNetwork)
-                {
+            foreach (IPAddress ip in host.AddressList) {
+                if (ip.AddressFamily == AddressFamily.InterNetwork) {
                     ServerIP = ip;
                     break;
                 }
@@ -71,10 +56,8 @@ namespace MultiServer
         /// Close all connected client (we do not need to shutdown the server socket as its connections
         /// are already closed with the clients).
         /// </summary>
-        public void CloseAllSockets()
-        {
-            foreach (Socket socket in clientSockets)
-            {
+        public void CloseAllSockets() {
+            foreach (Socket socket in clientSockets) {
                 socket.Shutdown(SocketShutdown.Both);
                 socket.Close();
             }
@@ -82,12 +65,10 @@ namespace MultiServer
             serverSocket.Close();
         }
 
-        private void WaitForClient1(IAsyncResult AR)
-        {
+        private void WaitForClient1(IAsyncResult AR) {
             Socket socket;
 
-            try
-            {
+            try {
                 socket = serverSocket.EndAccept(AR);
             }
             catch (ObjectDisposedException) // I cannot seem to avoid this (on exit when properly closing sockets)
@@ -99,22 +80,11 @@ namespace MultiServer
 
             clientSockets.Add(socket); // if client connects, add it to a list 
 
-            //socket.BeginReceive(buffer, 0, BUFFER_SIZE, SocketFlags.None, ReceiveCallback, socket); // start waiting to recieve messages from client
-            int received = clientSockets[0].Receive(buffer);
+            socket.BeginReceive(buffer, 0, BUFFER_SIZE, SocketFlags.None, ReceiveCallback, socket); // start waiting to recieve messages from client
+            while (!Client1Ready) {
 
-            if (received == 0) // Assume the client has disconnected.
-            {
-                Console.WriteLine("Client Disconnected");
             }
-
-            // Shrink the buffer so we don't get null chars in the text.
-            byte[] recBuf = new byte[received];
-            Array.Copy(buffer, recBuf, received);
-            string receivedMsg = Encoding.ASCII.GetString(recBuf);
-            // Reset the buffer.
-            //Array.Resize(ref buffer, clientSocket.ReceiveBufferSize);
-            Console.WriteLine("Message received: " + receivedMsg);
-
+            Client1Ready = false;
 
             byte[] appended = Encoding.ASCII.GetBytes("Waiting For Opponent");
 
@@ -127,12 +97,10 @@ namespace MultiServer
 
         }
 
-        private void WaitForClient2(IAsyncResult AR)
-        {
+        private void WaitForClient2(IAsyncResult AR) {
             Socket socket;
 
-            try
-            {
+            try {
                 socket = serverSocket.EndAccept(AR);
             }
             catch (ObjectDisposedException) // I cannot seem to avoid this (on exit when properly closing sockets)
@@ -144,20 +112,7 @@ namespace MultiServer
 
             clientSockets.Add(socket); // if client connects, add it to a list 
 
-            int received = clientSockets[1].Receive(buffer);
-
-            if (received == 0) // Assume the client has disconnected.
-            {
-                Console.WriteLine("Client Disconnected");
-            }
-
-            // Shrink the buffer so we don't get null chars in the text.
-            byte[] recBuf = new byte[received];
-            Array.Copy(buffer, recBuf, received);
-            string receivedMsg = Encoding.ASCII.GetString(recBuf);
-            // Reset the buffer.
-            //Array.Resize(ref buffer, clientSocket.ReceiveBufferSize);
-            Console.WriteLine("Message received: " + receivedMsg);
+            socket.BeginReceive(buffer, 0, BUFFER_SIZE, SocketFlags.None, ReceiveCallback, socket); // start waiting to recieve messages from client
 
             //------------------
             // Initialize our test class and set the message to Starting Game for player 2, serialize and send it to the client who just joined
@@ -168,8 +123,7 @@ namespace MultiServer
             Console.WriteLine(serializeMe.GetMessage());
             byte[] appended;
             IFormatter formatter = new BinaryFormatter();
-            using (MemoryStream stream = new MemoryStream())
-            {
+            using (MemoryStream stream = new MemoryStream()) {
                 formatter.Serialize(stream, serializeMe);
                 appended = stream.ToArray();
             }
@@ -177,26 +131,15 @@ namespace MultiServer
 
             byte[] identifier = Encoding.ASCII.GetBytes(MessageIdentifiers.TwoPlayersConnected.ToString("d"));
             byte[] data3 = Combine(identifier, appended);
+
+            while (!Client2Ready) {
+
+            }
+            Client2Ready = false;
+
             socket.Send(data3);
 
             //------------------
-
-
-            received = clientSockets[0].Receive(buffer);
-
-            if (received == 0) // Assume the client has disconnected.
-            {
-                Console.WriteLine("Client Disconnected");
-            }
-
-            // Shrink the buffer so we don't get null chars in the text.
-            recBuf = new byte[received];
-            Array.Copy(buffer, recBuf, received);
-            receivedMsg = Encoding.ASCII.GetString(recBuf);
-            // Reset the buffer.
-            //Array.Resize(ref buffer, clientSocket.ReceiveBufferSize);
-            Console.WriteLine("Message received: " + receivedMsg);
-
 
             //------------------
             //This one goes to the first client, letting them know the game is starting, and that they are player 1
@@ -205,8 +148,7 @@ namespace MultiServer
             serializeMe.SetMessage("Two Players Connected");
             serializeMe.SetPlayer("Player1");
             formatter = new BinaryFormatter();
-            using (MemoryStream stream = new MemoryStream())
-            {
+            using (MemoryStream stream = new MemoryStream()) {
                 formatter.Serialize(stream, serializeMe);
                 appended = stream.ToArray();
             }
@@ -216,6 +158,12 @@ namespace MultiServer
             data3 = Combine(identifier, appended);
             //------------------
 
+            while (!Client1Ready) {
+
+            }
+            Client1Ready = false;
+
+
             clientSockets[0].Send(data3);
 
             //serverSocket.BeginAccept(WaitForClient2, null);// maybe this would tell client, this game is full
@@ -223,20 +171,17 @@ namespace MultiServer
             StartingGame();
 
         }
-        
-        public void StartingGame()
-        {
+
+        public void StartingGame() {
             Console.WriteLine("Starting Game");
-            while (!Client1Ready || !Client2Ready)
-            {
+            while (!Client1Ready || !Client2Ready) {
 
             }
             Console.WriteLine("Game Started");
             GameLoop();
         }
 
-        public void GameLoop()
-        {
+        public void GameLoop() {
             byte[] appended = Encoding.ASCII.GetBytes("Not Your Turn");
             byte[] identifier = Encoding.ASCII.GetBytes(MessageIdentifiers.StartingGame.ToString("d"));
             byte[] data = Combine(identifier, appended);
@@ -249,14 +194,13 @@ namespace MultiServer
 
             clientSockets[currentPlayer].Send(data);
             Client1Ready = false;
-            clientSockets[currentPlayer].BeginReceive(buffer, 0, BUFFER_SIZE, SocketFlags.None, ReceiveCallback, clientSockets[currentPlayer]); // start waiting to recieve messages from client
+            //clientSockets[currentPlayer].BeginReceive(buffer, 0, BUFFER_SIZE, SocketFlags.None, ReceiveCallback, clientSockets[currentPlayer]); // start waiting to recieve messages from client
 
             clientSockets[otherPlayer].Send(data2);
             Client2Ready = false;
-            clientSockets[otherPlayer].BeginReceive(buffer, 0, BUFFER_SIZE, SocketFlags.None, ReceiveCallback, clientSockets[otherPlayer]); // start waiting to recieve messages from client
+            //clientSockets[otherPlayer].BeginReceive(buffer, 0, BUFFER_SIZE, SocketFlags.None, ReceiveCallback, clientSockets[otherPlayer]); // start waiting to recieve messages from client
 
-            while (!Client1Ready || !Client2Ready)
-            {
+            while (!Client1Ready || !Client2Ready) {
 
             }
             var temp = currentPlayer;
@@ -265,55 +209,22 @@ namespace MultiServer
             GameLoop();
         }
 
-        public static byte[] Combine(byte[] first, byte[] second)
-        {
+        public static byte[] Combine(byte[] first, byte[] second) {
             byte[] ret = new byte[first.Length + second.Length];
             Buffer.BlockCopy(first, 0, ret, 0, first.Length);
             Buffer.BlockCopy(second, 0, ret, first.Length, second.Length);
             return ret;
         }
 
-        private void ReceiveData()
-        {
-            while (clientSockets[0].Connected)
-            {
-                int received = clientSockets[0].Receive(buffer);
-
-                if (received == 0) // Assume the client has disconnected.
-                {
-                    Console.WriteLine("Client Disconnected");
-                    break;
-                }
-
-                // Shrink the buffer so we don't get null chars in the text.
-                byte[] recBuf = new byte[received];
-                Array.Copy(buffer, recBuf, received);
-                string receivedMsg = Encoding.ASCII.GetString(recBuf);
-                // Reset the buffer.
-                //Array.Resize(ref buffer, clientSocket.ReceiveBufferSize);
-                Console.WriteLine("Message received: " + receivedMsg);
-            }
-
-            // Assume the client has disconnected and start listening again for connections.
-            Console.WriteLine("\nListening again...");
-            clientSockets[0] = serverSocket.Accept();
-            Console.WriteLine("Client Connected");
-            Console.WriteLine("Waiting for data...");
-            ReceiveData();
-        }
-
-        private void ReceiveCallback(IAsyncResult AR)
-        {
+        private void ReceiveCallback(IAsyncResult AR) {
             Socket current = (Socket)AR.AsyncState;
 
             int received;
 
-            try
-            {
+            try {
                 received = current.EndReceive(AR);
             }
-            catch (SocketException)
-            {
+            catch (SocketException) {
                 Console.WriteLine("Client forcefully disconnected");
                 // Don't shutdown because the socket may be disposed and its disconnected anyway.
                 current.Close();
@@ -321,15 +232,13 @@ namespace MultiServer
                 return;
             }
 
-            if (current == clientSockets[0])
-            {
+            if (current == clientSockets[0]) {
                 Client1Ready = true;
                 Console.WriteLine("Player 1 ready");
-         
+
 
             }
-            else if(current == clientSockets[1])
-            {
+            else if (current == clientSockets[1]) {
                 Client2Ready = true;
                 Console.WriteLine("Player 2 ready");
             }
@@ -340,15 +249,13 @@ namespace MultiServer
 
             //Console.WriteLine("Text is an invalid request");
             byte[] data = Encoding.ASCII.GetBytes("Server Ready");
-            current.Send(data);
+            //current.Send(data);
             //Console.WriteLine("Warning Sent");
 
-            if (text == "Ready")
-            {
+            if (text == "Ready") {
                 current.BeginReceive(buffer, 0, BUFFER_SIZE, SocketFlags.None, ReceiveCallback, current);
             }
-            else
-            {
+            else {
                 Console.WriteLine("Received Text: " + text);
                 current.BeginReceive(buffer, 0, BUFFER_SIZE, SocketFlags.None, ReceiveCallback, current);
             }
@@ -371,17 +278,4 @@ namespace MultiServer
 
         }
     }
-    //public class Program
-    //{
-    //    // 1. START IN MAIN
-    //    static void Main()
-    //    {
-    //        Server server = new Server();
-    //        Game game = new Game();
-    //        Console.Title = "Server";
-    //        server.SetupServer(); // 2. GO TO SETUPSERVER
-    //        Console.ReadLine(); // When we press enter close everything
-    //        server.CloseAllSockets();
-    //    }
-    //}
 }

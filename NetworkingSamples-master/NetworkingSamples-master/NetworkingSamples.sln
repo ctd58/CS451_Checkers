@@ -7,8 +7,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiServer", "MultiServer\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiClient", "MultiClient\MultiClient.csproj", "{E73DCBEE-3F3A-4185-A6B6-57DAB5412D12}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{228C5B5C-17B6-42AD-8ECE-1006E897423B}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SharedClasses", "SharedClasses", "{105AAB38-EB7D-4B35-AC20-5091360C9933}"
 	ProjectSection(SolutionItems) = preProject
+		MultiServer\GameBoard.cs = MultiServer\GameBoard.cs
 		SharedClass.cs = SharedClass.cs
 	EndProjectSection
 EndProject
