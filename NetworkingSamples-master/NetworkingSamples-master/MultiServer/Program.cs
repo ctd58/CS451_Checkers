@@ -9,27 +9,15 @@ using System.Text;
 
 namespace MultiServer
 {
-    public class Game
-    {
-        public Game()
-        {
-
-        }
-
-        public void myMethod()
-        {
-
-        }
-    }
 
     public class Server
     {
+        #region Attributes
         private static readonly Socket serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         private static readonly List<Socket> clientSockets = new List<Socket>();
         private const int BUFFER_SIZE = 2048;
         private const int PORT = 100;
         private static readonly byte[] buffer = new byte[BUFFER_SIZE];
-        private Game game = new Game();
 
         private bool Client1Ready = false;
         private bool Client2Ready = false;
@@ -37,12 +25,14 @@ namespace MultiServer
         private int otherPlayer = 1;
 
         public int test = 0;
+        #endregion
 
-
+        #region Constructors
         public Server()
         {
 
         }
+        #endregion
 
         public void SetupServer()
         {
