@@ -37,12 +37,22 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\CKPoint.cs">
+      <Link>CKPoint.cs</Link>
+    </Compile>
+    <Compile Include="..\GameBoard.cs">
+      <Link>GameBoard.cs</Link>
+    </Compile>
+    <Compile Include="..\PlayerMove.cs">
+      <Link>PlayerMove.cs</Link>
+    </Compile>
     <Compile Include="..\SharedClass.cs">
       <Link>SharedClass.cs</Link>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Server.cs" />
+    <Compile Include="ServerCheckersGame.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

@@ -1,6 +1,5 @@
 ﻿using System;
 
-enum MessageIdentifiers { OnePlayerConnected, TwoPlayersConnected, StartingGame}
 
 [Serializable]
 public class Sclass1
