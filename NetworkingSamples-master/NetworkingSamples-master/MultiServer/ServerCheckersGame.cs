@@ -8,7 +8,7 @@ namespace MultiServer {
     public class ServerCheckersGame {
         #region Attributes
 
-        public GameBoard gameBoard = new GameBoard();
+        private GameBoard gameBoard = new GameBoard();
         #endregion
 
         #region Constructors
