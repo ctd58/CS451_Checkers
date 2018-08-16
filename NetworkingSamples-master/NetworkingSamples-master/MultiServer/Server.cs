@@ -25,7 +25,7 @@ namespace MultiServer {
 
         public int test = 0;
 
-        public ServerCheckersGame currentGame = new ServerCheckersGame();
+        private ServerCheckersGame currentGame = new ServerCheckersGame();
         #endregion
 
         #region Constructors

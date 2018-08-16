@@ -1,5 +1,6 @@
 ﻿using System;
-
+using System.Collections;
+using System.Collections.Generic;
 
 enum MessageIdentifiers { OnePlayerConnected, TwoPlayersConnected, StartingGame,
     WaitingForOpponent, GameUpdate, RetryGameUpdate, GameOver, PauseRequest, PauseGame };
@@ -9,10 +10,9 @@ public enum CheckerPieces { Empty, Red, RedKing, Black, BlackKing };
 [Serializable]
 public class GameBoard
 {
-
     #region Attributes
 
-    private int currentPlayer = 1;
+    private int currentPlayer = 1; // I'm assuming we're using player 1 and 2, not 0 and 1
     private DateTime timerExpires = DateTime.Now;
 
     private CheckerPieces[,] gameBoard = new CheckerPieces[8, 8];
@@ -22,6 +22,41 @@ public class GameBoard
     #region Constructors
 
     public GameBoard() {
+
+        MakeBoard();
+        PrintBoard(); 
+	}
+    #endregion
+
+    #region Getters and Setters
+
+    public GameStatus GetGameStatus() {
+        return gameStatus;
+    }
+
+    public CheckerPieces[,] GetGameBoard() {
+        return gameBoard;
+    }
+
+    public DateTime GetTimerExpires() {
+        return timerExpires;
+    }
+    public void SetTimerExpires(DateTime timerExpires) {
+        this.timerExpires = timerExpires;
+    }
+
+    public int GetCurrentPlayer() {
+        return currentPlayer;
+    }
+    public void SetCurrentPlayer(int currentPlayer) {
+        this.currentPlayer = currentPlayer;
+    }
+    #endregion
+
+    #region Methods
+
+    #region Make and Print Board
+    private void MakeBoard() {
 
         // Player 1 is Red, and is placed on the top 3 rows
         // Top left tile [0,0] is white, and will not have a piece placed on it
@@ -56,7 +91,9 @@ public class GameBoard
                 }
             }
         }
+    }
 
+    private void PrintBoard() {
         int count = 1;
         foreach (CheckerPieces checkerPiece in gameBoard) {
             if (checkerPiece == CheckerPieces.Red) {
@@ -72,16 +109,103 @@ public class GameBoard
             count++;
         }
         Console.WriteLine();
-	}
+    }
     #endregion
 
-    #region Getters and Setters
-    public GameStatus GetGameStatus() {
-        return gameStatus;
-    }
-    public CheckerPieces[,] GetGameBoard() {
-        return gameBoard;
-    }
+    public bool ApplyMove(PlayerMove move) {
 
+        List<CKPoint> listPoints = move.GetPlayerMove();
+        CKPoint startingPoint = listPoints[0]; // A move will always be at least 2 long, with index 0 being the starting point
+        CKPoint endingPoint = listPoints[listPoints.Count - 1];
+        CheckerPieces piece = gameBoard[startingPoint.GetColumn(), startingPoint.GetRow()]; // Column is x, Row is y
+        CheckerPieces[] opponentPieces = new CheckerPieces[2];
+        if (piece == CheckerPieces.Red || piece == CheckerPieces.RedKing) {
+            opponentPieces[0] = CheckerPieces.Black;
+            opponentPieces[1] = CheckerPieces.BlackKing;
+        }
+        else if (piece == CheckerPieces.Black || piece == CheckerPieces.BlackKing) {
+            opponentPieces[0] = CheckerPieces.Red;
+            opponentPieces[1] = CheckerPieces.RedKing;
+        }
+
+        CKPoint fromPoint = startingPoint;
+
+        foreach (CKPoint point in listPoints) {
+
+            if (point == startingPoint) { // Starting Point, skip
+                continue;
+            }
+            else if (Math.Abs(fromPoint.GetRow() - point.GetRow()) == 0) { // Invalid move
+                // Throw error
+                return false;
+            }
+            else if (Math.Abs(fromPoint.GetRow() - point.GetRow()) == 1 && listPoints.Count == 2) { // Not jumping, just move to new point if empty
+                if (piece == CheckerPieces.Red) {
+                    if (fromPoint.GetRow() - point.GetRow() != -1 || gameBoard[point.GetColumn(), point.GetRow()] != CheckerPieces.Empty) {
+                        // Throw error
+                        return false;
+                    }
+                }
+                else if (piece == CheckerPieces.Black) {
+                    if (fromPoint.GetRow() - point.GetRow() != 1 || gameBoard[point.GetColumn(), point.GetRow()] != CheckerPieces.Empty) {
+                        // Throw error
+                        return false;
+                    }
+                }
+                else if (piece == CheckerPieces.RedKing || piece == CheckerPieces.BlackKing) {
+                    if (Math.Abs(fromPoint.GetRow() - point.GetRow()) != 1 || gameBoard[point.GetColumn(), point.GetRow()] != CheckerPieces.Empty) {
+                        // Throw error
+                        return false;
+                    }
+                }
+
+                gameBoard[fromPoint.GetColumn(), fromPoint.GetRow()] = CheckerPieces.Empty;
+                gameBoard[point.GetColumn(), point.GetRow()] = piece;
+            }
+            else if (Math.Abs(fromPoint.GetRow() - point.GetRow()) == 2) { // Jumping to take pieces
+                int middleColumn = (fromPoint.GetColumn() - point.GetColumn()) / 2;
+                int middleRow = point.GetRow() - 1;
+                if (piece == CheckerPieces.Red) {
+                    if (fromPoint.GetRow() - point.GetRow() != -2 || gameBoard[point.GetColumn(), point.GetRow()] != CheckerPieces.Empty ||
+                    (gameBoard[middleColumn, middleRow] != CheckerPieces.Black && gameBoard[middleColumn, middleRow] != CheckerPieces.BlackKing)) {
+                        // Throw error
+                        return false;
+                    }
+                }
+                else if (piece == CheckerPieces.Black) {
+                    if (fromPoint.GetRow() - point.GetRow() != 2 || gameBoard[point.GetColumn(), point.GetRow()] != CheckerPieces.Empty ||
+                    (gameBoard[middleColumn, middleRow] != opponentPieces[0] && gameBoard[middleColumn, middleRow] != opponentPieces[1])) {
+                        // Throw error
+                        return false;
+                    }
+                }
+                else if (piece == CheckerPieces.RedKing || piece == CheckerPieces.BlackKing) {
+                    if (Math.Abs(fromPoint.GetRow() - point.GetRow()) != 2 || gameBoard[point.GetColumn(), point.GetRow()] != CheckerPieces.Empty ||
+                    (gameBoard[middleColumn, middleRow] != opponentPieces[0] && gameBoard[middleColumn, middleRow] != opponentPieces[1])) {
+                        // Throw error
+                        return false;
+                    }
+                }
+
+                gameBoard[fromPoint.GetColumn(), fromPoint.GetRow()] = CheckerPieces.Empty;
+                gameBoard[middleColumn, middleRow] = CheckerPieces.Empty;
+                gameBoard[point.GetColumn(), point.GetRow()] = piece;
+            }
+
+            fromPoint = point; // Make the point we just moved to the new fromPoint for the next move
+        }
+
+        // Check if piece should turn into King
+        if(endingPoint.GetRow() == 0 || endingPoint.GetRow() == 7 && (piece != CheckerPieces.RedKing || piece != CheckerPieces.BlackKing)) {
+            if (piece == CheckerPieces.Red) {
+                gameBoard[endingPoint.GetColumn(), endingPoint.GetRow()] = CheckerPieces.RedKing;
+            }
+            else if (piece == CheckerPieces.Black) {
+                gameBoard[endingPoint.GetColumn(), endingPoint.GetRow()] = CheckerPieces.BlackKing;
+            }
+        }
+
+        return true;
+    }
     #endregion
 }
