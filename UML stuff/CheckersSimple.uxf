@@ -1,0 +1,529 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="14.2">
+  <zoom_level>8</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>400</x>
+      <y>112</y>
+      <w>168</w>
+      <h>48</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;Socket&gt;&gt;
+--
+Using Sockets to Communicate
+between client and server.
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>0</x>
+      <y>232</y>
+      <w>296</w>
+      <h>264</h>
+    </coordinates>
+    <panel_attributes>Server
+--
+-serverSocket: static readonly Socket;
+-PORT: const int;
+-player1Socket: static readonly Socket;
+-player2Socket: static readonly Socket;
+-BUFFER_SIZE: const int = 2048;
+-buffer: static readonly byte[] = new byte[BUFFER_SIZE];
+-currentGame: ServerCheckersGame;
+--
++ Server()
++ void SetupServer()
++ void CloseAllSockets()
++ void ReceiveMessage(IAsyncResult AR)
++ void InterpretMessage(byte[] message)
++ void SendMessage(Socket socket, byte[] message)
++ void WaitForClient1(IAsyncResult AR)
++ void WaitForClient2(IAsyncResult AR)
++ void StartGame() 
++ void GameLoop()
++ void SendGameUpdate()
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>664</x>
+      <y>232</y>
+      <w>344</w>
+      <h>232</h>
+    </coordinates>
+    <panel_attributes>Client
+--
+-ClientSocket: static readonly Socket
+-port: int;
+-IpAddress: string
+-BUFFER_SIZE: const int = 2048;
+-buffer: static readonly byte[] = new byte[BUFFER_SIZE];
+-currentGame: ClientCheckersGame 
+--
++ Client()
++ void ConnectToServer();
++ byte[ ] ReceiveResponse();
++ void InterpretMessage(byte[] message)
++ void SendString(string text)
++ void SendBytes(byte[] message)
++ void RequestLoop();
++ void PlayerTurn();
++ void OpponentTurn();
++ void Surrender();</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>0</x>
+      <y>96</y>
+      <w>296</w>
+      <h>96</h>
+    </coordinates>
+    <panel_attributes>Program.cs
+--
+- static void Main()</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>664</x>
+      <y>88</y>
+      <w>344</w>
+      <h>104</h>
+    </coordinates>
+    <panel_attributes>Program.cs
+--
+- static void Main{}</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>0</x>
+      <y>536</y>
+      <w>296</w>
+      <h>240</h>
+    </coordinates>
+    <panel_attributes>ServerCheckersGame
+--
+-currentPlayersMove: PlayerMove;
+-TURNTIME: const float;
+-gameBoard: GameBoard;
+--
++ ServerCheckersGame()
++ void SetCurrentPlayerMove(PlayerMove move)
++ PlayerMove GetCurrentPlayerMove()
++ void SetCurrentPlayer(int player)
++ int GetCurrentPlayer()
++ float GetTurnTime()
++ int GetGameStatus()
++ GameBoard GetGameBoard()
++ bool ApplyMove()
++ void SetTimerExpires()
++ Date GetTimerExpires()
++ void SwitchTurns();</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>136</x>
+      <y>488</y>
+      <w>24</w>
+      <h>64</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;60.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>136</x>
+      <y>184</y>
+      <w>24</w>
+      <h>64</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;60.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>72</x>
+      <y>8</y>
+      <w>168</w>
+      <h>48</h>
+    </coordinates>
+    <panel_attributes>ServerProgram
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>760</x>
+      <y>0</y>
+      <w>168</w>
+      <h>48</h>
+    </coordinates>
+    <panel_attributes>ClientProgram
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>368</x>
+      <y>656</y>
+      <w>240</w>
+      <h>160</h>
+    </coordinates>
+    <panel_attributes>PlayerMove&lt;&lt;Serializable&gt;&gt;
+--
+
+-move: List&lt;CKPoint&gt;
+-player: int
+--
++ PlayerMove(){}
++ void BuildMove(CKPoint point)
++ void RestartMove()
++ List&lt;Point&gt; GetPlayerMove()
+
+
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>288</x>
+      <y>656</y>
+      <w>96</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>100.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>368</x>
+      <y>440</y>
+      <w>240</w>
+      <h>200</h>
+    </coordinates>
+    <panel_attributes>GameBoard&lt;&lt;Serializable&gt;&gt;
+--
+ -gameboard: [ ][ ] CheckerPieces
+ -gameStatus: GameStatus
+ -timerExpires: Date;
+ -currentPlayer: int;
+--
++ GameBoard()
++ bool ApplyMove(PlayerMove move)
++ GameStatus CheckForWin()
++ [ ][ ] CheckerPieces GetGameBoard()
++ GameStatus GetGameStatus()
++ Date GetTimerExpires()
++ void SetTimerExpires(Date d)
++ int GetCurrentPlayer()
++ void SetCurrentPlayer(int p)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>288</x>
+      <y>536</y>
+      <w>96</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>100.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>480</x>
+      <y>632</y>
+      <w>24</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>10.0;30.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>728</x>
+      <y>504</y>
+      <w>248</w>
+      <h>168</h>
+    </coordinates>
+    <panel_attributes>CheckersGameForm
+--
+-MyMove: PlayerMove
+-TimerExpires: Date
+-GameBoard: GameBoard
+--
++CheckersGameForm()
++void UpdateBoard(Gameboard board)
++void DisableMovements()
++void EnableMovements()
++void MakeMove()
++PlayerMove GetMove()
++button SubmitMove()
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1056</x>
+      <y>376</y>
+      <w>168</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>GameOverForm
+--
++button PressPlayAgain()
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1056</x>
+      <y>256</y>
+      <w>168</w>
+      <h>104</h>
+    </coordinates>
+    <panel_attributes>JoinGameForm
+--
+-IP: textbox
+-Port: textbox
+-ErrorMessage: textbox
+-PressedJoinGame: bool
+-
++JoinGameForm()
++buttonPressJoinGame()
++
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>352</x>
+      <y>288</y>
+      <w>272</w>
+      <h>136</h>
+    </coordinates>
+    <panel_attributes>--
+enum MessageIdentifiers { WaitingForOpponent,
+StartingGame, GameUpdate, RetryGameUpdate, 
+GameOver, PauseRequest, Pausegame} 
+
+enum GameStatus {InProgress,
+Player1Wins, Player2Wins, Draw}
+
+enum CheckersPieces {Red,RedKing,
+Black,BlackKing}
+
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>368</x>
+      <y>856</y>
+      <w>240</w>
+      <h>160</h>
+    </coordinates>
+    <panel_attributes>CKPoint&lt;&lt;Serializable&gt;&gt;
+--
+-row: int;
+-column: int;
+--
++ CKPoint()
++ CKPoint(int row, int column);
++ void SetPoint(int row, int column);
++ int GetRow();
++ int GetColumn();
+
+
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>480</x>
+      <y>808</y>
+      <w>24</w>
+      <h>64</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;60.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>600</x>
+      <y>568</y>
+      <w>104</w>
+      <h>312</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>10.0;370.0;110.0;370.0;110.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>480</x>
+      <y>416</y>
+      <w>24</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;30.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>288</x>
+      <y>360</y>
+      <w>80</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>80.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>424</x>
+      <y>216</y>
+      <w>120</w>
+      <h>32</h>
+    </coordinates>
+    <panel_attributes>Universal / Shared
+Classes
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>840</x>
+      <y>184</y>
+      <w>24</w>
+      <h>64</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;60.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1000</x>
+      <y>256</y>
+      <w>72</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>70.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1000</x>
+      <y>376</y>
+      <w>72</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>70.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>600</x>
+      <y>656</y>
+      <w>144</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;160.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>600</x>
+      <y>536</y>
+      <w>144</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;160.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>848</x>
+      <y>456</y>
+      <w>24</w>
+      <h>64</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;60.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>616</x>
+      <y>360</y>
+      <w>64</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;60.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>560</x>
+      <y>112</y>
+      <w>120</w>
+      <h>144</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;70.0;10.0;70.0;160.0;130.0;160.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>288</x>
+      <y>112</y>
+      <w>128</w>
+      <h>144</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>140.0;10.0;70.0;10.0;70.0;160.0;10.0;160.0</additional_attributes>
+  </element>
+</diagram>
