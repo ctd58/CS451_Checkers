@@ -37,6 +37,9 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\GameBoard.cs">
+      <Link>GameBoard.cs</Link>
+    </Compile>
     <Compile Include="..\SharedClass.cs">
       <Link>SharedClass.cs</Link>
     </Compile>
