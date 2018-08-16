@@ -1,7 +1,5 @@
 ﻿using System;
 
-enum MessageIdentifiers { OnePlayerConnected, TwoPlayersConnected, StartingGame,
-    WaitingForOpponent, GameUpdate, RetryGameUpdate, GameOver, PauseRequest, PauseGame }
 
 [Serializable]
 public class Sclass1

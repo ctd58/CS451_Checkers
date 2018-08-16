@@ -1,6 +1,8 @@
 ﻿using System;
 
 
+enum MessageIdentifiers { OnePlayerConnected, TwoPlayersConnected, StartingGame,
+    WaitingForOpponent, GameUpdate, RetryGameUpdate, GameOver, PauseRequest, PauseGame };
 public enum GameStatus { InProgress, Player1Wins, Player2Wins, Draw };
 public enum CheckerPieces { Empty, Red, RedKing, Black, BlackKing };
 
@@ -9,16 +11,17 @@ public class GameBoard
 {
 
     #region Attributes
-    private CheckerPieces[,] gameBoard;
-    private GameStatus gameStatus;
 
+    private int currentPlayer = 1;
+    private DateTime timerExpires = DateTime.Now;
+
+    private CheckerPieces[,] gameBoard = new CheckerPieces[8, 8];
+    private GameStatus gameStatus = GameStatus.InProgress;
     #endregion
 
     #region Constructors
-    public GameBoard() {
-        gameStatus = GameStatus.InProgress;
 
-        gameBoard = new CheckerPieces[8, 8];
+    public GameBoard() {
 
         // Player 1 is Red, and is placed on the top 3 rows
         // Top left tile [0,0] is white, and will not have a piece placed on it
@@ -56,7 +59,13 @@ public class GameBoard
 
         int count = 1;
         foreach (CheckerPieces checkerPiece in gameBoard) {
-            Console.Write(checkerPiece + " | ");
+            if (checkerPiece == CheckerPieces.Red) {
+                Console.Write(" " + checkerPiece + "  | ");
+            }
+            else {
+                Console.Write(checkerPiece + " | ");
+            }
+
             if (count % 8 == 0) {
                 Console.WriteLine();
             }

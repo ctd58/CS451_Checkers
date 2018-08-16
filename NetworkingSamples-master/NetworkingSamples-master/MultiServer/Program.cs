@@ -16,10 +16,7 @@ namespace MultiServer
         // 1. START IN MAIN
         static void Main()
         {
-            Server server = new Server();
-            Console.Title = "Server";
-            GameBoard gameBoard = new GameBoard();
-            server.SetupServer(); // 2. GO TO SETUPSERVER
+            Server server = new Server();  // 2. GO TO SETUPSERVER
             Console.ReadLine(); // When we press enter close everything
             server.CloseAllSockets();
         }

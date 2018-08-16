@@ -24,11 +24,15 @@ namespace MultiServer {
         private int otherPlayer = 1;
 
         public int test = 0;
+
+        public ServerCheckersGame currentGame = new ServerCheckersGame();
         #endregion
 
         #region Constructors
         public Server() {
 
+            Console.Title = "Server";
+            SetupServer();
         }
         #endregion
 
