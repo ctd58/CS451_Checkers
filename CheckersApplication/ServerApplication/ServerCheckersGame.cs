@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MultiServer {
+namespace ServerApplication {
     public class ServerCheckersGame {
         #region Attributes
 

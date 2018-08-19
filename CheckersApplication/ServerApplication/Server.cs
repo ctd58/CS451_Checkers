@@ -9,26 +9,26 @@ using System.Net.Sockets;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 
-namespace MultiServer {
+namespace ServerApplication {
     public class Server {
         #region Attributes
         private static readonly Socket serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-        private static readonly List<Socket> clientSockets = new List<Socket>();
+        private Socket player1Socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+        private Socket player2Socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         private const int BUFFER_SIZE = 2048;
-        private const int PORT = 100;
         private static readonly byte[] buffer = new byte[BUFFER_SIZE];
+        private const int PORT = 100;
 
         private bool Client1Ready = false;
         private bool Client2Ready = false;
-        private int currentPlayer = 0;
-        private int otherPlayer = 1;
+        private int currentPlayer = 1;
+        private int otherPlayer = 2;
 
-        public int test = 0;
-
-        private ServerCheckersGame currentGame = new ServerCheckersGame();
+        private ServerCheckersGame currentGame;
         #endregion
 
         #region Constructors
+        //Initialize and call SetupServer
         public Server() {
 
             Console.Title = "Server";
@@ -36,6 +36,7 @@ namespace MultiServer {
         }
         #endregion
 
+        //Initialize server socket and async call to WaitForClient1
         public void SetupServer() {
             Console.WriteLine("Setting up server...");
 
@@ -61,14 +62,84 @@ namespace MultiServer {
         /// are already closed with the clients).
         /// </summary>
         public void CloseAllSockets() {
-            foreach (Socket socket in clientSockets) {
-                socket.Shutdown(SocketShutdown.Both);
-                socket.Close();
-            }
+            player1Socket.Shutdown(SocketShutdown.Both);
+            player1Socket.Close();
+            player2Socket.Shutdown(SocketShutdown.Both);
+            player2Socket.Close();
 
             serverSocket.Close();
         }
 
+        private void ReceiveCallback(IAsyncResult AR)
+        {
+            Socket current = (Socket)AR.AsyncState;
+
+            int received;
+
+            try
+            {
+                received = current.EndReceive(AR);
+            }
+            catch (SocketException)
+            {
+                Console.WriteLine("Client forcefully disconnected");
+                // Don't shutdown because the socket may be disposed and its disconnected anyway.
+                current.Close();
+                return;
+            }
+
+            if (current == player1Socket)
+            {
+                Client1Ready = true;
+                Console.WriteLine("Player 1 ready");
+
+
+            }
+            else if (current == player2Socket)
+            {
+                Client2Ready = true;
+                Console.WriteLine("Player 2 ready");
+            }
+
+            byte[] recBuf = new byte[received];
+            Array.Copy(buffer, recBuf, received);
+            string text = Encoding.ASCII.GetString(recBuf);
+
+            //Console.WriteLine("Text is an invalid request");
+            //byte[] data = Encoding.ASCII.GetBytes("Server Ready");
+            //current.Send(data);
+            //Console.WriteLine("Warning Sent");
+
+            //InterpretMessage(recBuf);
+
+            current.BeginReceive(buffer, 0, BUFFER_SIZE, SocketFlags.None, ReceiveCallback, current);
+        }
+
+        public void InterpretMessage(byte[] message)
+        {
+            //get the firstbyte
+            //Identifier is the string value
+            byte[] firstByte = new byte[1];
+            Array.Copy(message, 0, firstByte, 0, firstByte.Length);
+            string identifier = Encoding.ASCII.GetString(firstByte);
+
+            //put the rest of the bytes in messageBytes
+            byte[] messageBytes = new byte[message.Length - 1];
+            Array.Copy(message, 1, messageBytes, 0, messageBytes.Length);
+            string text = Encoding.ASCII.GetString(message); //remove text after we change all messages to use first byte as identifier
+
+            if (identifier == MessageIdentifiers.ReadyUpdate.ToString("d") || text == "Ready")
+            {
+
+            }
+            else
+            {
+                Console.WriteLine("Received Text: " + text);
+            }
+
+        }
+
+        //Setup Socket for client1, make sure its listening, and start async wait for client 2
         private void WaitForClient1(IAsyncResult AR) {
             Socket socket;
 
@@ -82,7 +153,7 @@ namespace MultiServer {
 
             Console.WriteLine("1st Client Connected");
 
-            clientSockets.Add(socket); // if client connects, add it to a list 
+            player1Socket = socket; // if client connects, add it to a list 
 
             socket.BeginReceive(buffer, 0, BUFFER_SIZE, SocketFlags.None, ReceiveCallback, socket); // start waiting to recieve messages from client
             while (!Client1Ready) {
@@ -93,8 +164,8 @@ namespace MultiServer {
             byte[] appended = Encoding.ASCII.GetBytes("Waiting For Opponent");
 
             byte[] identifier = Encoding.ASCII.GetBytes(MessageIdentifiers.OnePlayerConnected.ToString("d"));
-            byte[] data3 = Combine(identifier, appended);
-            socket.Send(data3);
+            byte[] data = Combine(identifier, appended);
+            socket.Send(data);
             //------------------
 
             serverSocket.BeginAccept(WaitForClient2, null);//4. START WAITING FOR A SECOND PLAYER
@@ -114,7 +185,7 @@ namespace MultiServer {
 
             Console.WriteLine("2nd Client Connected, Starting Game");
 
-            clientSockets.Add(socket); // if client connects, add it to a list 
+            player2Socket = socket; // if client connects, add it to a list 
 
             socket.BeginReceive(buffer, 0, BUFFER_SIZE, SocketFlags.None, ReceiveCallback, socket); // start waiting to recieve messages from client
 
@@ -134,14 +205,14 @@ namespace MultiServer {
             //byte[] appended = Encoding.ASCII.GetBytes("test");
 
             byte[] identifier = Encoding.ASCII.GetBytes(MessageIdentifiers.TwoPlayersConnected.ToString("d"));
-            byte[] data3 = Combine(identifier, appended);
+            byte[] data = Combine(identifier, appended);
 
             while (!Client2Ready) {
 
             }
             Client2Ready = false;
 
-            socket.Send(data3);
+            socket.Send(data);
 
             //------------------
 
@@ -159,7 +230,7 @@ namespace MultiServer {
             //byte[] appended = Encoding.ASCII.GetBytes("test");
 
             identifier = Encoding.ASCII.GetBytes(MessageIdentifiers.TwoPlayersConnected.ToString("d"));
-            data3 = Combine(identifier, appended);
+            data = Combine(identifier, appended);
             //------------------
 
             while (!Client1Ready) {
@@ -168,7 +239,7 @@ namespace MultiServer {
             Client1Ready = false;
 
 
-            clientSockets[0].Send(data3);
+            player1Socket.Send(data);
 
             //serverSocket.BeginAccept(WaitForClient2, null);// maybe this would tell client, this game is full
 
@@ -177,6 +248,7 @@ namespace MultiServer {
         }
 
         public void StartingGame() {
+            currentGame = new ServerCheckersGame();
             Console.WriteLine("Starting Game");
             while (!Client1Ready || !Client2Ready) {
 
@@ -186,23 +258,36 @@ namespace MultiServer {
         }
 
         public void GameLoop() {
-            byte[] appended = Encoding.ASCII.GetBytes("Not Your Turn");
-            byte[] identifier = Encoding.ASCII.GetBytes(MessageIdentifiers.StartingGame.ToString("d"));
-            byte[] data = Combine(identifier, appended);
-            data = Combine(identifier, appended);
+            byte[] appendedCP = Encoding.ASCII.GetBytes("Your Turn");
+            byte[] identifierCP = Encoding.ASCII.GetBytes(MessageIdentifiers.StartingGame.ToString("d"));
+            byte[] CurrentPlayerData = Combine(identifierCP, appendedCP);
+            CurrentPlayerData = Combine(identifierCP, appendedCP);
 
-            byte[] appended2 = Encoding.ASCII.GetBytes("Your Turn");
-            byte[] identifier2 = Encoding.ASCII.GetBytes(MessageIdentifiers.StartingGame.ToString("d"));
-            byte[] data2 = Combine(identifier2, appended2);
-            data2 = Combine(identifier2, appended2);
+            byte[] appendedOP = Encoding.ASCII.GetBytes("Not Your Turn");
+            byte[] identifierOP = Encoding.ASCII.GetBytes(MessageIdentifiers.StartingGame.ToString("d"));
+            byte[] OtherPlayerData = Combine(identifierOP, appendedOP);
+            OtherPlayerData = Combine(identifierOP, appendedOP);
 
-            clientSockets[currentPlayer].Send(data);
-            Client1Ready = false;
-            //clientSockets[currentPlayer].BeginReceive(buffer, 0, BUFFER_SIZE, SocketFlags.None, ReceiveCallback, clientSockets[currentPlayer]); // start waiting to recieve messages from client
-
-            clientSockets[otherPlayer].Send(data2);
-            Client2Ready = false;
-            //clientSockets[otherPlayer].BeginReceive(buffer, 0, BUFFER_SIZE, SocketFlags.None, ReceiveCallback, clientSockets[otherPlayer]); // start waiting to recieve messages from client
+            if(currentPlayer == 1)
+            {
+                player1Socket.Send(CurrentPlayerData);
+                Client1Ready = false;
+            }
+            else
+            {
+                player2Socket.Send(CurrentPlayerData);
+                Client2Ready = false;
+            }
+            if(otherPlayer == 1)
+            {
+                player1Socket.Send(OtherPlayerData);
+                Client1Ready = false;
+            }
+            else
+            {
+                player2Socket.Send(OtherPlayerData);
+                Client2Ready = false;
+            }
 
             while (!Client1Ready || !Client2Ready) {
 
@@ -213,6 +298,7 @@ namespace MultiServer {
             GameLoop();
         }
 
+        //Used to combine an identifier byte with a "message" byte[]
         public static byte[] Combine(byte[] first, byte[] second) {
             byte[] ret = new byte[first.Length + second.Length];
             Buffer.BlockCopy(first, 0, ret, 0, first.Length);
@@ -220,66 +306,6 @@ namespace MultiServer {
             return ret;
         }
 
-        private void ReceiveCallback(IAsyncResult AR) {
-            Socket current = (Socket)AR.AsyncState;
-
-            int received;
-
-            try {
-                received = current.EndReceive(AR);
-            }
-            catch (SocketException) {
-                Console.WriteLine("Client forcefully disconnected");
-                // Don't shutdown because the socket may be disposed and its disconnected anyway.
-                current.Close();
-                clientSockets.Remove(current);
-                return;
-            }
-
-            if (current == clientSockets[0]) {
-                Client1Ready = true;
-                Console.WriteLine("Player 1 ready");
-
-
-            }
-            else if (current == clientSockets[1]) {
-                Client2Ready = true;
-                Console.WriteLine("Player 2 ready");
-            }
-
-            byte[] recBuf = new byte[received];
-            Array.Copy(buffer, recBuf, received);
-            string text = Encoding.ASCII.GetString(recBuf);
-
-            //Console.WriteLine("Text is an invalid request");
-            byte[] data = Encoding.ASCII.GetBytes("Server Ready");
-            //current.Send(data);
-            //Console.WriteLine("Warning Sent");
-
-            if (text == "Ready") {
-                current.BeginReceive(buffer, 0, BUFFER_SIZE, SocketFlags.None, ReceiveCallback, current);
-            }
-            else {
-                Console.WriteLine("Received Text: " + text);
-                current.BeginReceive(buffer, 0, BUFFER_SIZE, SocketFlags.None, ReceiveCallback, current);
-            }
-            //if (text.ToLower() == "get time") // Client requested time
-            //{
-            //    Console.WriteLine("Text is a get time request");
-            //    byte[] data = Encoding.ASCII.GetBytes(DateTime.Now.ToLongTimeString());
-            //    current.Send(data);
-            //    Console.WriteLine("Time sent to client");
-            //}
-            //else if (text.ToLower() == "exit") // Client wants to exit gracefully
-            //{
-            //    // Always Shutdown before closing
-            //    current.Shutdown(SocketShutdown.Both);
-            //    current.Close();
-            //    clientSockets.Remove(current);
-            //    Console.WriteLine("Client disconnected");
-            //    return;
-            //}
-
-        }
+        
     }
 }

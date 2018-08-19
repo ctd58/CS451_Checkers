@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-enum MessageIdentifiers { OnePlayerConnected, TwoPlayersConnected, StartingGame,
+public enum MessageIdentifiers { ReadyUpdate, OnePlayerConnected, TwoPlayersConnected, StartingGame,
     WaitingForOpponent, GameUpdate, RetryGameUpdate, GameOver, PauseRequest, PauseGame };
 public enum GameStatus { InProgress, Player1Wins, Player2Wins, Draw };
 public enum CheckerPieces { Empty, Red, RedKing, Black, BlackKing };
@@ -12,7 +12,7 @@ public class GameBoard
 {
     #region Attributes
 
-    private int currentPlayer = 1; // I'm assuming we're using player 1 and 2, not 0 and 1
+    private int currentPlayer = 1; //player 1 and 2
     private DateTime timerExpires = DateTime.Now;
 
     private CheckerPieces[,] gameBoard = new CheckerPieces[8, 8];
