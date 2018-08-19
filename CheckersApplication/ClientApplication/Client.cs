@@ -20,7 +20,11 @@ namespace ClientApplication
 (AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
         private const int PORT = 100;
-        private bool waiting = false;
+        private string ipAddress;
+        private const int BUFFER_SIZE = 2048;
+        private static readonly byte[] buffer = new byte[BUFFER_SIZE];
+
+        //private ClientCheckersGame currentGame;
 
         public Client() { }
 
@@ -36,9 +40,9 @@ namespace ClientApplication
                     Console.WriteLine("Connection attempt: " + attempts);
                     // Change IPAddress.Loopback to a remote IP to connect to a remote host.
                     Console.WriteLine("Enter IP Address");
-                    string ip = Console.ReadLine();
+                    ipAddress = Console.ReadLine();
                     //Would put a User input here to get IP address
-                    IPAddress ServerIP = IPAddress.Parse(ip);
+                    IPAddress ServerIP = IPAddress.Parse(ipAddress);
                     Console.WriteLine(ServerIP);
                     ClientSocket.Connect(ServerIP, PORT);
                 }
@@ -150,7 +154,6 @@ namespace ClientApplication
                 }
             }
             //get the rest of the bytes to string, except the first
-            waiting = false;
         }
 
         public void test()

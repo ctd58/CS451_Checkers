@@ -12,7 +12,7 @@ public class GameBoard
 {
     #region Attributes
 
-    private int currentPlayer = 1; // I'm assuming we're using player 1 and 2, not 0 and 1
+    private int currentPlayer = 1; //player 1 and 2
     private DateTime timerExpires = DateTime.Now;
 
     private CheckerPieces[,] gameBoard = new CheckerPieces[8, 8];

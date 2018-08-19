@@ -8,7 +8,6 @@ public class PlayerMove
     #region Attributes
 
     private List<CKPoint> move = new List<CKPoint>();
-    private int player = 1;
     #endregion
 
     #region Constructors
