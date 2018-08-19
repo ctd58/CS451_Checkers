@@ -41,7 +41,8 @@ namespace ClientApplication
                     Console.WriteLine("Connection attempt: " + attempts);
                     // Change IPAddress.Loopback to a remote IP to connect to a remote host.
                     Console.WriteLine("Enter IP Address");
-                    ipAddress = Console.ReadLine();
+                    //ipAddress = Console.ReadLine();
+                    ipAddress = "192.168.1.6";
                     //Would put a User input here to get IP address
                     IPAddress ServerIP = IPAddress.Parse(ipAddress);
                     Console.WriteLine(ServerIP);
@@ -55,17 +56,8 @@ namespace ClientApplication
 
             Console.Clear();
             Console.WriteLine("Connected");
-            RequestLoop();
-        }
-
-        private void RequestLoop()
-        {
-            Console.WriteLine(@"<Type ""exit"" to properly disconnect client>");
-
-            while (true)
-            {
-                ReceiveResponse(); //5. AND RECEIVING REQUESTS
-            }
+            //RequestLoop();
+            ReceiveResponse();
         }
 
         /// <summary>
@@ -77,14 +69,6 @@ namespace ClientApplication
             ClientSocket.Shutdown(SocketShutdown.Both);
             ClientSocket.Close();
             Environment.Exit(0);
-        }
-
-        private void SendRequest()
-        {
-            //Console.Write("Send a request: ");
-            //string request = Console.ReadLine();
-            SendString("Ready");
-
         }
 
         /// <summary>
@@ -100,7 +84,7 @@ namespace ClientApplication
         {
             //get message received
             var buffer = new byte[2048];
-            SendRequest(); //4. KEEP SENDING REQUESTS
+            SendMessage(MessageIdentifiers.ReadyUpdate); //4. KEEP SENDING REQUESTS
                            //int receivedReady = ClientSocket.Receive(buffer, SocketFlags.None);
             Console.Write("Receiving \n");
             int received = ClientSocket.Receive(buffer, SocketFlags.None);
@@ -110,15 +94,21 @@ namespace ClientApplication
             //string text = Encoding.ASCII.GetString(data);
             //Console.WriteLine(text);
 
+            InterpretMessage(data);
+            ReceiveResponse();
+        }
+
+        public void InterpretMessage(byte[] message)
+        {
             //get the 1st byte
             byte[] firstByte = new byte[1];
-            Array.Copy(data, 0, firstByte, 0, firstByte.Length);
+            Array.Copy(message, 0, firstByte, 0, firstByte.Length);
             string identifier = Encoding.ASCII.GetString(firstByte);
             //Console.WriteLine(identifier);
 
             //put the rest of the bytes in messageBytes
-            byte[] messageBytes = new byte[data.Length - 1];
-            Array.Copy(data, 1, messageBytes, 0, messageBytes.Length);
+            byte[] messageBytes = new byte[message.Length - 1];
+            Array.Copy(message, 1, messageBytes, 0, messageBytes.Length);
 
             if (identifier == MessageIdentifiers.OnePlayerConnected.ToString("d"))
             {
@@ -140,28 +130,102 @@ namespace ClientApplication
                 playerID = deserializedClass.GetPlayer();
                 Console.WriteLine(playerID);
             }
-            else if (identifier == MessageIdentifiers.StartingGame.ToString("d"))
+            else if (identifier == MessageIdentifiers.GameUpdate.ToString("d"))
             {
                 string text = Encoding.ASCII.GetString(messageBytes);
                 if (text == "Your Turn")
                 {
                     Console.WriteLine(text);
-                    string request = Console.ReadLine();
-                    SendString(request);
-                    test();
+                    //Get and Send PlayerMove
+                    SendMessage(MessageIdentifiers.GameUpdate);
                 }
                 else
                 {
                     Console.WriteLine(text);
                 }
             }
+            else if (identifier == MessageIdentifiers.RetryGameUpdate.ToString("d"))
+            {
+                Console.WriteLine("Invalid Move, Try Again");
+                //do stuff to update the gameboard and try again
+                SendMessage(MessageIdentifiers.GameUpdate);
+            }
             //get the rest of the bytes to string, except the first
         }
 
-        public void test()
+        private void SendMessage(MessageIdentifiers id)
         {
-            var buffer = new byte[2048];
-            int receivedthree = ClientSocket.Receive(buffer, SocketFlags.None);
+            byte[] appended;
+            byte[] identifier;
+            byte[] data;
+            switch (id)
+            {
+                case MessageIdentifiers.ReadyUpdate:
+                    appended = Encoding.ASCII.GetBytes("Ready");
+
+                    identifier = Encoding.ASCII.GetBytes(MessageIdentifiers.ReadyUpdate.ToString("d"));
+                    data = Combine(identifier, appended);
+                    ClientSocket.Send(data);
+                    break;
+                case MessageIdentifiers.GameUpdate:
+                    string request = Console.ReadLine();
+
+                    PlayerMove pm = new PlayerMove();
+                    CKPoint ck1 = new CKPoint(1, 1);
+                    CKPoint ck2 = new CKPoint(2, 2);
+
+                    if (request == "cheat")
+                    {
+                        pm.BuildMove(ck1);
+                    }
+                    else
+                    {
+                        //set appended to player move
+                        pm.BuildMove(ck1);
+                        pm.BuildMove(ck2);
+                    }
+
+                    IFormatter formatter = new BinaryFormatter();
+                    using (MemoryStream stream = new MemoryStream())
+                    {
+                        formatter.Serialize(stream, pm);
+                        appended = stream.ToArray();
+                    }
+                    //byte[] appended = Encoding.ASCII.GetBytes("test");
+
+                    identifier = Encoding.ASCII.GetBytes(MessageIdentifiers.GameUpdate.ToString("d"));
+                    data = Combine(identifier, appended);
+
+                    var buffer = new byte[2048];
+
+                    ClientSocket.Send(data);
+
+                    Console.WriteLine("Sent Game Update");
+
+                    ReceiveResponse();
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void RequestLoop()
+        {
+            Console.WriteLine(@"<Type ""exit"" to properly disconnect client>");
+
+            while (true)
+            {
+                ReceiveResponse(); //5. AND RECEIVING REQUESTS
+            }
+        }
+
+        //Used to combine an identifier byte with a "message" byte[]
+        public static byte[] Combine(byte[] first, byte[] second)
+        {
+            byte[] ret = new byte[first.Length + second.Length];
+            Buffer.BlockCopy(first, 0, ret, 0, first.Length);
+            Buffer.BlockCopy(second, 0, ret, first.Length, second.Length);
+            return ret;
         }
     }
 }

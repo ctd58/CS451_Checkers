@@ -27,13 +27,13 @@ public class PlayerMove
 
     #region Methods
 
-    void BuildMove(CKPoint point) {
+    public void BuildMove(CKPoint point) {
         //RestartMove();
 
         move.Add(point);
     }
 
-    void RestartMove() {
+    public void RestartMove() {
         move.Clear();
     }
     #endregion

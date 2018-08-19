@@ -8,6 +8,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Reflection;
 
 namespace ServerApplication {
     public class Server {
@@ -21,6 +22,7 @@ namespace ServerApplication {
 
         private bool Client1Ready = false;
         private bool Client2Ready = false;
+        private bool AppliedPlayerMove = false;
         private int currentPlayer = 1;
         private int otherPlayer = 2;
 
@@ -88,19 +90,6 @@ namespace ServerApplication {
                 return;
             }
 
-            if (current == player1Socket)
-            {
-                Client1Ready = true;
-                Console.WriteLine("Player 1 ready");
-
-
-            }
-            else if (current == player2Socket)
-            {
-                Client2Ready = true;
-                Console.WriteLine("Player 2 ready");
-            }
-
             byte[] recBuf = new byte[received];
             Array.Copy(buffer, recBuf, received);
             string text = Encoding.ASCII.GetString(recBuf);
@@ -110,12 +99,12 @@ namespace ServerApplication {
             //current.Send(data);
             //Console.WriteLine("Warning Sent");
 
-            //InterpretMessage(recBuf);
+            InterpretMessage(recBuf, current);
 
             current.BeginReceive(buffer, 0, BUFFER_SIZE, SocketFlags.None, ReceiveCallback, current);
         }
 
-        public void InterpretMessage(byte[] message)
+        public void InterpretMessage(byte[] message, Socket current)
         {
             //get the firstbyte
             //Identifier is the string value
@@ -128,8 +117,44 @@ namespace ServerApplication {
             Array.Copy(message, 1, messageBytes, 0, messageBytes.Length);
             string text = Encoding.ASCII.GetString(message); //remove text after we change all messages to use first byte as identifier
 
-            if (identifier == MessageIdentifiers.ReadyUpdate.ToString("d") || text == "Ready")
+            if (identifier == MessageIdentifiers.ReadyUpdate.ToString("d"))
             {
+                if (current == player1Socket)
+                {
+                    Client1Ready = true;
+                    Console.WriteLine("Player 1 ready");
+
+
+                }
+                else if (current == player2Socket)
+                {
+                    Client2Ready = true;
+                    Console.WriteLine("Player 2 ready");
+                }
+            }
+            else if (identifier == MessageIdentifiers.GameUpdate.ToString("d"))
+            {
+                PlayerMove deserializedPM;
+
+                IFormatter formatter = new BinaryFormatter();
+                using (MemoryStream stream = new MemoryStream(messageBytes))
+                {
+                    formatter.Binder = new PreMergeToMergedDeserializationBinder();
+                    deserializedPM = (PlayerMove)formatter.Deserialize(stream);
+                }
+                //Console.WriteLine("PlayerMove: From(" + deserializedPM.GetPlayerMove()[0].GetRow().ToString() + " , " + deserializedPM.GetPlayerMove()[0].GetColumn().ToString() + ")");
+                //Console.WriteLine("PlayerMove: To(" + deserializedPM.GetPlayerMove()[1].GetRow().ToString() + " , " + deserializedPM.GetPlayerMove()[1].GetColumn().ToString() + ")");
+                //if move was invalid
+                if (deserializedPM.GetPlayerMove().Count == 1)
+                {
+                    Console.WriteLine("Move was Invalid");
+                    SendMessage(MessageIdentifiers.RetryGameUpdate, null);
+                }
+                else
+                {
+                    Console.WriteLine("Move was valid");
+                    AppliedPlayerMove = true;
+                }
 
             }
             else
@@ -137,6 +162,125 @@ namespace ServerApplication {
                 Console.WriteLine("Received Text: " + text);
             }
 
+        }
+
+        public void SendMessage(MessageIdentifiers id, Socket socket)
+        {
+            byte[] appended;
+            byte[] identifier;
+            byte[] data;
+            switch (id){
+                case MessageIdentifiers.OnePlayerConnected:
+                    appended = Encoding.ASCII.GetBytes("Waiting For Opponent");
+
+                    identifier = Encoding.ASCII.GetBytes(MessageIdentifiers.OnePlayerConnected.ToString("d"));
+                    data = Combine(identifier, appended);
+                    socket.Send(data);
+                    break;
+                case MessageIdentifiers.TwoPlayersConnected:
+                    //------------------
+                    // Initialize our test class and set the message to Starting Game for player 2, serialize and send it to the client who just joined
+                    //------------------
+                    Sclass1 serializeMe = new Sclass1();
+                    serializeMe.SetMessage("Two Players Connected");
+                    serializeMe.SetPlayer("Player2");
+                    Console.WriteLine(serializeMe.GetMessage());
+                    IFormatter formatter = new BinaryFormatter();
+                    using (MemoryStream stream = new MemoryStream())
+                    {
+                        formatter.Serialize(stream, serializeMe);
+                        appended = stream.ToArray();
+                    }
+                    //byte[] appended = Encoding.ASCII.GetBytes("test");
+
+                    identifier = Encoding.ASCII.GetBytes(MessageIdentifiers.TwoPlayersConnected.ToString("d"));
+                    data = Combine(identifier, appended);
+
+                    while (!Client2Ready)
+                    {
+
+                    }
+                    Client2Ready = false;
+
+                    socket.Send(data);
+
+                    //------------------
+                    //This one goes to the first client, letting them know the game is starting, and that they are player 1
+                    //------------------
+                    serializeMe = new Sclass1();
+                    serializeMe.SetMessage("Two Players Connected");
+                    serializeMe.SetPlayer("Player1");
+                    formatter = new BinaryFormatter();
+                    using (MemoryStream stream = new MemoryStream())
+                    {
+                        formatter.Serialize(stream, serializeMe);
+                        appended = stream.ToArray();
+                    }
+                    //byte[] appended = Encoding.ASCII.GetBytes("test");
+
+                    identifier = Encoding.ASCII.GetBytes(MessageIdentifiers.TwoPlayersConnected.ToString("d"));
+                    data = Combine(identifier, appended);
+
+                    while (!Client1Ready)
+                    {
+
+                    }
+                    Client1Ready = false;
+
+                    player1Socket.Send(data);
+
+                    break;
+                case MessageIdentifiers.GameUpdate:
+                    byte[] appendedCP = Encoding.ASCII.GetBytes("Your Turn");
+                    byte[] identifierCP = Encoding.ASCII.GetBytes(MessageIdentifiers.GameUpdate.ToString("d"));
+                    byte[] CurrentPlayerData = Combine(identifierCP, appendedCP);
+                    CurrentPlayerData = Combine(identifierCP, appendedCP);
+
+                    byte[] appendedOP = Encoding.ASCII.GetBytes("Not Your Turn");
+                    byte[] identifierOP = Encoding.ASCII.GetBytes(MessageIdentifiers.GameUpdate.ToString("d"));
+                    byte[] OtherPlayerData = Combine(identifierOP, appendedOP);
+                    OtherPlayerData = Combine(identifierOP, appendedOP);
+
+                    if (currentPlayer == 1)
+                    {
+                        player1Socket.Send(CurrentPlayerData);
+                        Client1Ready = false;
+                    }
+                    else
+                    {
+                        player2Socket.Send(CurrentPlayerData);
+                        Client2Ready = false;
+                    }
+                    if (otherPlayer == 1)
+                    {
+                        player1Socket.Send(OtherPlayerData);
+                        Client1Ready = false;
+                    }
+                    else
+                    {
+                        player2Socket.Send(OtherPlayerData);
+                        Client2Ready = false;
+                    }
+                    break;
+                case MessageIdentifiers.RetryGameUpdate:
+                    //just send the gameboard again
+                    appended = Encoding.ASCII.GetBytes("Unupdated Gameboard");
+
+                    identifier = Encoding.ASCII.GetBytes(MessageIdentifiers.RetryGameUpdate.ToString("d"));
+                    data = Combine(identifier, appended);
+                    if (currentPlayer == 1)
+                    {
+                        player1Socket.Send(data);
+                        Client1Ready = false;
+                    }
+                    else {
+                        player2Socket.Send(data);
+                        Client2Ready = false;
+                    }
+                    break;
+                default:
+                    break;
+            }
         }
 
         //Setup Socket for client1, make sure its listening, and start async wait for client 2
@@ -161,11 +305,8 @@ namespace ServerApplication {
             }
             Client1Ready = false;
 
-            byte[] appended = Encoding.ASCII.GetBytes("Waiting For Opponent");
+            SendMessage(MessageIdentifiers.OnePlayerConnected, socket);
 
-            byte[] identifier = Encoding.ASCII.GetBytes(MessageIdentifiers.OnePlayerConnected.ToString("d"));
-            byte[] data = Combine(identifier, appended);
-            socket.Send(data);
             //------------------
 
             serverSocket.BeginAccept(WaitForClient2, null);//4. START WAITING FOR A SECOND PLAYER
@@ -189,57 +330,7 @@ namespace ServerApplication {
 
             socket.BeginReceive(buffer, 0, BUFFER_SIZE, SocketFlags.None, ReceiveCallback, socket); // start waiting to recieve messages from client
 
-            //------------------
-            // Initialize our test class and set the message to Starting Game for player 2, serialize and send it to the client who just joined
-            //------------------
-            Sclass1 serializeMe = new Sclass1();
-            serializeMe.SetMessage("Two Players Connected");
-            serializeMe.SetPlayer("Player2");
-            Console.WriteLine(serializeMe.GetMessage());
-            byte[] appended;
-            IFormatter formatter = new BinaryFormatter();
-            using (MemoryStream stream = new MemoryStream()) {
-                formatter.Serialize(stream, serializeMe);
-                appended = stream.ToArray();
-            }
-            //byte[] appended = Encoding.ASCII.GetBytes("test");
-
-            byte[] identifier = Encoding.ASCII.GetBytes(MessageIdentifiers.TwoPlayersConnected.ToString("d"));
-            byte[] data = Combine(identifier, appended);
-
-            while (!Client2Ready) {
-
-            }
-            Client2Ready = false;
-
-            socket.Send(data);
-
-            //------------------
-
-            //------------------
-            //This one goes to the first client, letting them know the game is starting, and that they are player 1
-            //------------------
-            serializeMe = new Sclass1();
-            serializeMe.SetMessage("Two Players Connected");
-            serializeMe.SetPlayer("Player1");
-            formatter = new BinaryFormatter();
-            using (MemoryStream stream = new MemoryStream()) {
-                formatter.Serialize(stream, serializeMe);
-                appended = stream.ToArray();
-            }
-            //byte[] appended = Encoding.ASCII.GetBytes("test");
-
-            identifier = Encoding.ASCII.GetBytes(MessageIdentifiers.TwoPlayersConnected.ToString("d"));
-            data = Combine(identifier, appended);
-            //------------------
-
-            while (!Client1Ready) {
-
-            }
-            Client1Ready = false;
-
-
-            player1Socket.Send(data);
+            SendMessage(MessageIdentifiers.TwoPlayersConnected, socket);
 
             //serverSocket.BeginAccept(WaitForClient2, null);// maybe this would tell client, this game is full
 
@@ -258,40 +349,15 @@ namespace ServerApplication {
         }
 
         public void GameLoop() {
-            byte[] appendedCP = Encoding.ASCII.GetBytes("Your Turn");
-            byte[] identifierCP = Encoding.ASCII.GetBytes(MessageIdentifiers.StartingGame.ToString("d"));
-            byte[] CurrentPlayerData = Combine(identifierCP, appendedCP);
-            CurrentPlayerData = Combine(identifierCP, appendedCP);
-
-            byte[] appendedOP = Encoding.ASCII.GetBytes("Not Your Turn");
-            byte[] identifierOP = Encoding.ASCII.GetBytes(MessageIdentifiers.StartingGame.ToString("d"));
-            byte[] OtherPlayerData = Combine(identifierOP, appendedOP);
-            OtherPlayerData = Combine(identifierOP, appendedOP);
-
-            if(currentPlayer == 1)
+            Console.WriteLine("Next Turn");
+            //check for win first, other wise send to get a move from a player
+            SendMessage(MessageIdentifiers.GameUpdate, null);
+            while (!Client1Ready || !Client2Ready || !AppliedPlayerMove)
             {
-                player1Socket.Send(CurrentPlayerData);
-                Client1Ready = false;
+                
             }
-            else
-            {
-                player2Socket.Send(CurrentPlayerData);
-                Client2Ready = false;
-            }
-            if(otherPlayer == 1)
-            {
-                player1Socket.Send(OtherPlayerData);
-                Client1Ready = false;
-            }
-            else
-            {
-                player2Socket.Send(OtherPlayerData);
-                Client2Ready = false;
-            }
+            AppliedPlayerMove = false;
 
-            while (!Client1Ready || !Client2Ready) {
-
-            }
             var temp = currentPlayer;
             currentPlayer = otherPlayer;
             otherPlayer = temp;
@@ -307,5 +373,24 @@ namespace ServerApplication {
         }
 
         
+    }
+}
+
+sealed class PreMergeToMergedDeserializationBinder : SerializationBinder
+{
+    public override Type BindToType(string assemblyName, string typeName)
+    {
+        Type typeToDeserialize = null;
+
+        // For each assemblyName/typeName that you want to deserialize to
+        // a different type, set typeToDeserialize to the desired type.
+        String exeAssembly = Assembly.GetExecutingAssembly().FullName;
+
+
+        // The following line of code returns the type.
+        typeToDeserialize = Type.GetType(String.Format("{0}, {1}",
+            typeName, exeAssembly));
+
+        return typeToDeserialize;
     }
 }
