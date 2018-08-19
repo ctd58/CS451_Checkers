@@ -8,6 +8,7 @@ public class PlayerMove
     #region Attributes
 
     private List<CKPoint> move = new List<CKPoint>();
+    private int player = 1;
     #endregion
 
     #region Constructors
@@ -27,14 +28,16 @@ public class PlayerMove
 
     #region Methods
 
-    void BuildMove(CKPoint point) {
+    public void BuildMove(CKPoint point) {
         //RestartMove();
 
         move.Add(point);
     }
 
-    void RestartMove() {
+    public void RestartMove() {
         move.Clear();
+
+        player = (player == 1) ? 2 : 1;
     }
     #endregion
 }
