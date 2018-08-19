@@ -23,6 +23,7 @@ namespace ClientApplication
         private string ipAddress;
         private const int BUFFER_SIZE = 2048;
         private static readonly byte[] buffer = new byte[BUFFER_SIZE];
+        private string playerID;
 
         //private ClientCheckersGame currentGame;
 
@@ -93,7 +94,6 @@ namespace ClientApplication
         {
             byte[] buffer = Encoding.ASCII.GetBytes(text);
             ClientSocket.Send(buffer, 0, buffer.Length, SocketFlags.None);
-            Console.Write("Receiving \n");
         }
 
         private void ReceiveResponse()
@@ -102,6 +102,7 @@ namespace ClientApplication
             var buffer = new byte[2048];
             SendRequest(); //4. KEEP SENDING REQUESTS
                            //int receivedReady = ClientSocket.Receive(buffer, SocketFlags.None);
+            Console.Write("Receiving \n");
             int received = ClientSocket.Receive(buffer, SocketFlags.None);
             if (received == 0) return;
             var data = new byte[received];
@@ -119,12 +120,12 @@ namespace ClientApplication
             byte[] messageBytes = new byte[data.Length - 1];
             Array.Copy(data, 1, messageBytes, 0, messageBytes.Length);
 
-            if (identifier == "0")
+            if (identifier == MessageIdentifiers.OnePlayerConnected.ToString("d"))
             {
                 string text = Encoding.ASCII.GetString(messageBytes);
                 Console.WriteLine(text);
             }
-            else if (identifier == "1")
+            else if (identifier == MessageIdentifiers.TwoPlayersConnected.ToString("d"))
             {
                 Sclass1 deserializedClass;
 
@@ -136,9 +137,10 @@ namespace ClientApplication
                 }
 
                 Console.WriteLine(deserializedClass.GetMessage());
-                Console.WriteLine(deserializedClass.GetPlayer());
+                playerID = deserializedClass.GetPlayer();
+                Console.WriteLine(playerID);
             }
-            else if (identifier == "2")
+            else if (identifier == MessageIdentifiers.StartingGame.ToString("d"))
             {
                 string text = Encoding.ASCII.GetString(messageBytes);
                 if (text == "Your Turn")

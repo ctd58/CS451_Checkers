@@ -70,6 +70,75 @@ namespace ServerApplication {
             serverSocket.Close();
         }
 
+        private void ReceiveCallback(IAsyncResult AR)
+        {
+            Socket current = (Socket)AR.AsyncState;
+
+            int received;
+
+            try
+            {
+                received = current.EndReceive(AR);
+            }
+            catch (SocketException)
+            {
+                Console.WriteLine("Client forcefully disconnected");
+                // Don't shutdown because the socket may be disposed and its disconnected anyway.
+                current.Close();
+                return;
+            }
+
+            if (current == player1Socket)
+            {
+                Client1Ready = true;
+                Console.WriteLine("Player 1 ready");
+
+
+            }
+            else if (current == player2Socket)
+            {
+                Client2Ready = true;
+                Console.WriteLine("Player 2 ready");
+            }
+
+            byte[] recBuf = new byte[received];
+            Array.Copy(buffer, recBuf, received);
+            string text = Encoding.ASCII.GetString(recBuf);
+
+            //Console.WriteLine("Text is an invalid request");
+            //byte[] data = Encoding.ASCII.GetBytes("Server Ready");
+            //current.Send(data);
+            //Console.WriteLine("Warning Sent");
+
+            //InterpretMessage(recBuf);
+
+            current.BeginReceive(buffer, 0, BUFFER_SIZE, SocketFlags.None, ReceiveCallback, current);
+        }
+
+        public void InterpretMessage(byte[] message)
+        {
+            //get the firstbyte
+            //Identifier is the string value
+            byte[] firstByte = new byte[1];
+            Array.Copy(message, 0, firstByte, 0, firstByte.Length);
+            string identifier = Encoding.ASCII.GetString(firstByte);
+
+            //put the rest of the bytes in messageBytes
+            byte[] messageBytes = new byte[message.Length - 1];
+            Array.Copy(message, 1, messageBytes, 0, messageBytes.Length);
+            string text = Encoding.ASCII.GetString(message); //remove text after we change all messages to use first byte as identifier
+
+            if (identifier == MessageIdentifiers.ReadyUpdate.ToString("d") || text == "Ready")
+            {
+
+            }
+            else
+            {
+                Console.WriteLine("Received Text: " + text);
+            }
+
+        }
+
         //Setup Socket for client1, make sure its listening, and start async wait for client 2
         private void WaitForClient1(IAsyncResult AR) {
             Socket socket;
@@ -237,48 +306,6 @@ namespace ServerApplication {
             return ret;
         }
 
-        private void ReceiveCallback(IAsyncResult AR) {
-            Socket current = (Socket)AR.AsyncState;
-
-            int received;
-
-            try {
-                received = current.EndReceive(AR);
-            }
-            catch (SocketException) {
-                Console.WriteLine("Client forcefully disconnected");
-                // Don't shutdown because the socket may be disposed and its disconnected anyway.
-                current.Close();
-                return;
-            }
-
-            if (current == player1Socket) {
-                Client1Ready = true;
-                Console.WriteLine("Player 1 ready");
-
-
-            }
-            else if (current == player2Socket) {
-                Client2Ready = true;
-                Console.WriteLine("Player 2 ready");
-            }
-
-            byte[] recBuf = new byte[received];
-            Array.Copy(buffer, recBuf, received);
-            string text = Encoding.ASCII.GetString(recBuf);
-
-            //Console.WriteLine("Text is an invalid request");
-            byte[] data = Encoding.ASCII.GetBytes("Server Ready");
-            //current.Send(data);
-            //Console.WriteLine("Warning Sent");
-
-            if (text == "Ready") {
-                current.BeginReceive(buffer, 0, BUFFER_SIZE, SocketFlags.None, ReceiveCallback, current);
-            }
-            else {
-                Console.WriteLine("Received Text: " + text);
-                current.BeginReceive(buffer, 0, BUFFER_SIZE, SocketFlags.None, ReceiveCallback, current);
-            }
-        }
+        
     }
 }

@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-enum MessageIdentifiers { OnePlayerConnected, TwoPlayersConnected, StartingGame,
+public enum MessageIdentifiers { ReadyUpdate, OnePlayerConnected, TwoPlayersConnected, StartingGame,
     WaitingForOpponent, GameUpdate, RetryGameUpdate, GameOver, PauseRequest, PauseGame };
 public enum GameStatus { InProgress, Player1Wins, Player2Wins, Draw };
 public enum CheckerPieces { Empty, Red, RedKing, Black, BlackKing };
