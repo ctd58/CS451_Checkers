@@ -49,7 +49,12 @@ public class GameBoard
         return currentPlayer;
     }
     public void SetCurrentPlayer(int currentPlayer) {
-        this.currentPlayer = currentPlayer;
+        if (currentPlayer == 1 || currentPlayer == 2) {
+            this.currentPlayer = currentPlayer;
+        }
+        else {
+            throw new InvalidOperationException("currentPlayer must be set to either 1 or 2");
+        }
     }
     #endregion
 
@@ -112,6 +117,34 @@ public class GameBoard
     }
     #endregion
 
+    public GameStatus CheckForWin() {
+
+        int redCount = 0;
+        int blackCount = 0;
+
+        foreach (CheckerPieces piece in gameBoard) {
+            if (piece == CheckerPieces.Red || piece == CheckerPieces.RedKing) {
+                redCount++;
+            }
+            else if (piece == CheckerPieces.Black || piece == CheckerPieces.BlackKing) {
+                blackCount++;
+            }
+        }
+
+        if (redCount == 0) {
+            return GameStatus.Player2Wins;
+        }
+        else if (blackCount == 0) {
+            return GameStatus.Player1Wins;
+        }
+
+        // Need to check if no valid moves are left for a team
+
+        // Need to check for draw
+
+        return GameStatus.InProgress;
+    }
+
     public bool ApplyMove(PlayerMove move) {
 
         List<CKPoint> listPoints = move.GetPlayerMove();
@@ -137,25 +170,34 @@ public class GameBoard
             }
             else if (Math.Abs(fromPoint.GetRow() - point.GetRow()) == 0) { // Invalid move
                 // Throw error
-                return false;
+                throw new InvalidOperationException("Move not changing rows (y direction)");
+                //return false;
+            }
+            else if (Math.Abs(fromPoint.GetColumn() - point.GetColumn()) == 0) { // Invalid move
+                // Throw error
+                throw new InvalidOperationException("Move not changing columns (x direction)");
+                //return false;
             }
             else if (Math.Abs(fromPoint.GetRow() - point.GetRow()) == 1 && listPoints.Count == 2) { // Not jumping, just move to new point if empty
                 if (piece == CheckerPieces.Red) {
                     if (fromPoint.GetRow() - point.GetRow() != -1 || gameBoard[point.GetColumn(), point.GetRow()] != CheckerPieces.Empty) {
                         // Throw error
-                        return false;
+                        throw new InvalidOperationException("Red piece single move invalid");
+                        //return false;
                     }
                 }
                 else if (piece == CheckerPieces.Black) {
                     if (fromPoint.GetRow() - point.GetRow() != 1 || gameBoard[point.GetColumn(), point.GetRow()] != CheckerPieces.Empty) {
                         // Throw error
-                        return false;
+                        throw new InvalidOperationException("Black piece single move invalid");
+                        //return false;
                     }
                 }
                 else if (piece == CheckerPieces.RedKing || piece == CheckerPieces.BlackKing) {
                     if (Math.Abs(fromPoint.GetRow() - point.GetRow()) != 1 || gameBoard[point.GetColumn(), point.GetRow()] != CheckerPieces.Empty) {
                         // Throw error
-                        return false;
+                        throw new InvalidOperationException("King piece single move invalid");
+                        //return false;
                     }
                 }
 
@@ -169,21 +211,24 @@ public class GameBoard
                     if (fromPoint.GetRow() - point.GetRow() != -2 || gameBoard[point.GetColumn(), point.GetRow()] != CheckerPieces.Empty ||
                     (gameBoard[middleColumn, middleRow] != CheckerPieces.Black && gameBoard[middleColumn, middleRow] != CheckerPieces.BlackKing)) {
                         // Throw error
-                        return false;
+                        throw new InvalidOperationException("Red piece single jump invalid");
+                        //return false;
                     }
                 }
                 else if (piece == CheckerPieces.Black) {
                     if (fromPoint.GetRow() - point.GetRow() != 2 || gameBoard[point.GetColumn(), point.GetRow()] != CheckerPieces.Empty ||
                     (gameBoard[middleColumn, middleRow] != opponentPieces[0] && gameBoard[middleColumn, middleRow] != opponentPieces[1])) {
                         // Throw error
-                        return false;
+                        throw new InvalidOperationException("Black piece single jump invalid");
+                        //return false;
                     }
                 }
                 else if (piece == CheckerPieces.RedKing || piece == CheckerPieces.BlackKing) {
                     if (Math.Abs(fromPoint.GetRow() - point.GetRow()) != 2 || gameBoard[point.GetColumn(), point.GetRow()] != CheckerPieces.Empty ||
                     (gameBoard[middleColumn, middleRow] != opponentPieces[0] && gameBoard[middleColumn, middleRow] != opponentPieces[1])) {
                         // Throw error
-                        return false;
+                        throw new InvalidOperationException("King piece single jump invalid");
+                        //return false;
                     }
                 }
 
