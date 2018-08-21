@@ -44,8 +44,20 @@ namespace ClientApplication
                     //ipAddress = Console.ReadLine();
                     ipAddress = "192.168.1.6";
                     //Would put a User input here to get IP address
-                    IPAddress ServerIP = IPAddress.Parse(ipAddress);
-                    Console.WriteLine(ServerIP);
+                    //IPAddress ServerIP = IPAddress.Parse(ipAddress);
+                    //Console.WriteLine(ServerIP);
+                    IPAddress ServerIP = null;
+                    IPHostEntry host;
+                    host = Dns.GetHostEntry(Dns.GetHostName());
+
+                    foreach (IPAddress ip in host.AddressList)
+                    {
+                        if (ip.AddressFamily == AddressFamily.InterNetwork)
+                        {
+                            ServerIP = ip;
+                            break;
+                        }
+                    }
                     ClientSocket.Connect(ServerIP, PORT);
                 }
                 catch (SocketException)
