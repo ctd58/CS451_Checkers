@@ -5,7 +5,7 @@
 public class Sclass1
 {
     private string message;
-    private string player;
+    private int player;
 
     public Sclass1()
     {
@@ -22,13 +22,13 @@ public class Sclass1
         message = s;
     }
 
-    public string GetPlayer()
+    public int GetPlayer()
     {
         return player;
     }
 
-    public void SetPlayer(string s)
+    public void SetPlayer(int id)
     {
-        player = s;
+        player = id;
     }
 }

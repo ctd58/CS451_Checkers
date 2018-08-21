@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ServerApplication {
-    public class ServerCheckersGame {
+namespace ClientApplication {
+    public class ClientCheckersGame {
         #region Attributes
 
+        private int PlayerID;
         private PlayerMove currentPlayerMove;
         private const float TURNTIME = 10.0f;
 
@@ -16,13 +17,28 @@ namespace ServerApplication {
 
         #region Constructors
 
-        public ServerCheckersGame() {
+        public ClientCheckersGame() {
             gameBoard = new GameBoard();
-            SetCurrentPlayer(1);
         }
         #endregion
 
         #region Getters and Setters
+
+        public int GetPlayerID()
+        {
+            return PlayerID;
+        }
+
+        public void SetPlayerID(int id)
+        {            
+            PlayerID = id;
+        }
+
+        public void UpdateBoard(GameBoard board)
+        {
+            gameBoard = board;
+            gameBoard.PrintBoard();
+        }
 
         public PlayerMove GetCurrentPlayerMove() {
             return currentPlayerMove;
@@ -60,6 +76,18 @@ namespace ServerApplication {
 
         #region Methods
 
+        public bool IsMyTurn()
+        {
+            if(gameBoard.GetCurrentPlayer() == PlayerID)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         public bool ApplyMove() {
 
             try {
@@ -76,11 +104,7 @@ namespace ServerApplication {
 
         public void SwitchTurns() {
 
-            try
-            {
-                currentPlayerMove.RestartMove();
-            }
-            catch(Exception e) { Console.WriteLine("Empty CurrentPlayerMove"); }
+            currentPlayerMove.RestartMove();
             int newCurrentPlayer = (gameBoard.GetCurrentPlayer() == 1) ? 2 : 1;
             gameBoard.SetCurrentPlayer(newCurrentPlayer);
         }

@@ -23,11 +23,14 @@ namespace ClientApplication
         private string ipAddress;
         private const int BUFFER_SIZE = 2048;
         private static readonly byte[] buffer = new byte[BUFFER_SIZE];
-        private string playerID;
+
+        private ClientCheckersGame currentGame;
 
         //private ClientCheckersGame currentGame;
 
-        public Client() { }
+        public Client() {
+            currentGame = new ClientCheckersGame();
+        }
 
         public void ConnectToServer()
         {
@@ -107,7 +110,6 @@ namespace ClientApplication
             //Console.WriteLine(text);
 
             InterpretMessage(data);
-            ReceiveResponse();
         }
 
         public void InterpretMessage(byte[] message)
@@ -139,21 +141,26 @@ namespace ClientApplication
                 }
 
                 Console.WriteLine(deserializedClass.GetMessage());
-                playerID = deserializedClass.GetPlayer();
-                Console.WriteLine(playerID);
+                currentGame.SetPlayerID(deserializedClass.GetPlayer());
+                Console.WriteLine(currentGame.GetPlayerID());
             }
             else if (identifier == MessageIdentifiers.GameUpdate.ToString("d"))
             {
-                string text = Encoding.ASCII.GetString(messageBytes);
-                if (text == "Your Turn")
+                IFormatter formatter = new BinaryFormatter();
+                using (MemoryStream stream = new MemoryStream(messageBytes))
                 {
-                    Console.WriteLine(text);
+                    formatter.Binder = new PreMergeToMergedDeserializationBinder();
+                    currentGame.UpdateBoard((GameBoard)formatter.Deserialize(stream));
+                }
+                if (currentGame.IsMyTurn())
+                {
+                    Console.WriteLine("Is my turn");
                     //Get and Send PlayerMove
                     SendMessage(MessageIdentifiers.GameUpdate);
                 }
                 else
                 {
-                    Console.WriteLine(text);
+                    Console.WriteLine("Is not my turn");
                 }
             }
             else if (identifier == MessageIdentifiers.RetryGameUpdate.ToString("d"))
@@ -162,7 +169,14 @@ namespace ClientApplication
                 //do stuff to update the gameboard and try again
                 SendMessage(MessageIdentifiers.GameUpdate);
             }
-            //get the rest of the bytes to string, except the first
+            else if(identifier == MessageIdentifiers.GameOver.ToString("d"))
+            {
+                string text = Encoding.ASCII.GetString(messageBytes);
+                Console.WriteLine(text);
+                //switch forms and close sockets;
+                return;
+            }
+            ReceiveResponse();
         }
 
         private void SendMessage(MessageIdentifiers id)
@@ -189,6 +203,10 @@ namespace ClientApplication
                     if (request == "cheat")
                     {
                         pm.BuildMove(ck1);
+                    }
+                    else if(request == "win")
+                    {
+                        
                     }
                     else
                     {

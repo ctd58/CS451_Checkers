@@ -24,7 +24,7 @@ public class GameBoard
     public GameBoard() {
 
         MakeBoard();
-        PrintBoard(); 
+        //PrintBoard(); 
 	}
     #endregion
 
@@ -98,7 +98,7 @@ public class GameBoard
         }
     }
 
-    private void PrintBoard() {
+    public void PrintBoard() {
         int count = 1;
         foreach (CheckerPieces checkerPiece in gameBoard) {
             if (checkerPiece == CheckerPieces.Red) {

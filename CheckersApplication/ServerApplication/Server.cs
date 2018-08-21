@@ -104,6 +104,8 @@ namespace ServerApplication {
             current.BeginReceive(buffer, 0, BUFFER_SIZE, SocketFlags.None, ReceiveCallback, current);
         }
 
+        public bool tempWinCheck = false;
+
         public void InterpretMessage(byte[] message, Socket current)
         {
             //get the firstbyte
@@ -150,6 +152,12 @@ namespace ServerApplication {
                     Console.WriteLine("Move was Invalid");
                     SendMessage(MessageIdentifiers.RetryGameUpdate, null);
                 }
+                else if(deserializedPM.GetPlayerMove().Count == 0)
+                {
+                    Console.WriteLine("Player Won");
+                    tempWinCheck = true;
+                    AppliedPlayerMove = true;
+                }
                 else
                 {
                     Console.WriteLine("Move was valid");
@@ -183,7 +191,7 @@ namespace ServerApplication {
                     //------------------
                     Sclass1 serializeMe = new Sclass1();
                     serializeMe.SetMessage("Two Players Connected");
-                    serializeMe.SetPlayer("Player2");
+                    serializeMe.SetPlayer(2);
                     Console.WriteLine(serializeMe.GetMessage());
                     IFormatter formatter = new BinaryFormatter();
                     using (MemoryStream stream = new MemoryStream())
@@ -209,7 +217,7 @@ namespace ServerApplication {
                     //------------------
                     serializeMe = new Sclass1();
                     serializeMe.SetMessage("Two Players Connected");
-                    serializeMe.SetPlayer("Player1");
+                    serializeMe.SetPlayer(1);
                     formatter = new BinaryFormatter();
                     using (MemoryStream stream = new MemoryStream())
                     {
@@ -231,36 +239,21 @@ namespace ServerApplication {
 
                     break;
                 case MessageIdentifiers.GameUpdate:
-                    byte[] appendedCP = Encoding.ASCII.GetBytes("Your Turn");
-                    byte[] identifierCP = Encoding.ASCII.GetBytes(MessageIdentifiers.GameUpdate.ToString("d"));
-                    byte[] CurrentPlayerData = Combine(identifierCP, appendedCP);
-                    CurrentPlayerData = Combine(identifierCP, appendedCP);
+                    GameBoard serializeGameBoard = currentGame.GetGameBoard();
+                    formatter = new BinaryFormatter();
+                    using (MemoryStream stream = new MemoryStream())
+                    {
+                        formatter.Serialize(stream, serializeGameBoard);
+                        appended = stream.ToArray();
+                    }
 
-                    byte[] appendedOP = Encoding.ASCII.GetBytes("Not Your Turn");
-                    byte[] identifierOP = Encoding.ASCII.GetBytes(MessageIdentifiers.GameUpdate.ToString("d"));
-                    byte[] OtherPlayerData = Combine(identifierOP, appendedOP);
-                    OtherPlayerData = Combine(identifierOP, appendedOP);
+                    identifier = Encoding.ASCII.GetBytes(MessageIdentifiers.GameUpdate.ToString("d"));
+                    byte[] GameBoardData = Combine(identifier, appended);
 
-                    if (currentPlayer == 1)
-                    {
-                        player1Socket.Send(CurrentPlayerData);
-                        Client1Ready = false;
-                    }
-                    else
-                    {
-                        player2Socket.Send(CurrentPlayerData);
-                        Client2Ready = false;
-                    }
-                    if (otherPlayer == 1)
-                    {
-                        player1Socket.Send(OtherPlayerData);
-                        Client1Ready = false;
-                    }
-                    else
-                    {
-                        player2Socket.Send(OtherPlayerData);
-                        Client2Ready = false;
-                    }
+                    player1Socket.Send(GameBoardData);
+                    Client1Ready = false;
+                    player2Socket.Send(GameBoardData);
+                    Client2Ready = false;
                     break;
                 case MessageIdentifiers.RetryGameUpdate:
                     //just send the gameboard again
@@ -277,6 +270,18 @@ namespace ServerApplication {
                         player2Socket.Send(data);
                         Client2Ready = false;
                     }
+                    break;
+                case MessageIdentifiers.GameOver:
+                    //Set the game over message
+                    appended = Encoding.ASCII.GetBytes("Someone Won the Game");
+
+                    identifier = Encoding.ASCII.GetBytes(MessageIdentifiers.GameOver.ToString("d"));
+                    data = Combine(identifier, appended);
+                    player1Socket.Send(data);
+                    Client1Ready = false;
+                    player2Socket.Send(data);
+                    Client2Ready = false;
+                    //do stuff to shut down server
                     break;
                 default:
                     break;
@@ -350,8 +355,16 @@ namespace ServerApplication {
 
         public void GameLoop() {
             Console.WriteLine("Next Turn");
+
             //check for win first, other wise send to get a move from a player
-            SendMessage(MessageIdentifiers.GameUpdate, null);
+            if (tempWinCheck)
+            {
+                SendMessage(MessageIdentifiers.GameOver, null);
+            }
+            else
+            {
+                SendMessage(MessageIdentifiers.GameUpdate, null);
+            }
             while (!Client1Ready || !Client2Ready || !AppliedPlayerMove)
             {
                 
@@ -361,6 +374,7 @@ namespace ServerApplication {
             var temp = currentPlayer;
             currentPlayer = otherPlayer;
             otherPlayer = temp;
+            currentGame.SwitchTurns();
             GameLoop();
         }
 
