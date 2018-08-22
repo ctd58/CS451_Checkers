@@ -1,6 +1,6 @@
 ﻿namespace Checkers
 {
-    partial class Form1
+    partial class Main_Menu_Form
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Main_Menu_Form));
             this.Menu_Panel = new System.Windows.Forms.Panel();
             this.Menu_Title = new System.Windows.Forms.Label();
             this.Menu_Icon = new System.Windows.Forms.PictureBox();
@@ -81,7 +81,7 @@
             this.Exit.Text = "x";
             this.Exit.Click += new System.EventHandler(this.Exit_Click);
             // 
-            // Form1
+            // Main_Menu_Form
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -90,8 +90,8 @@
             this.Controls.Add(this.Exit);
             this.Controls.Add(this.Menu_Panel);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-            this.Name = "Form1";
-            this.Text = "Form1";
+            this.Name = "Main_Menu_Form";
+            this.Text = "Main_Menu_Form";
             this.Menu_Panel.ResumeLayout(false);
             this.Menu_Panel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Menu_Icon)).EndInit();

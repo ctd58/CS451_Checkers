@@ -10,9 +10,11 @@ using System.Windows.Forms;
 
 namespace Checkers
 {
-    public partial class Form1 : Form
+    public partial class Main_Menu_Form : Form
     {
-        public Form1()
+        Point mouseDownPoint = Point.Empty;
+
+        public Main_Menu_Form()
         {
             InitializeComponent();
         }
@@ -22,5 +24,8 @@ namespace Checkers
         {
             this.Close();
         }
+
+        
     }
+
 }
