@@ -26,9 +26,11 @@
         private void InitializeComponent() {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Main_Menu_Form));
             this.Menu_Panel = new System.Windows.Forms.Panel();
+            this.Host_Button = new System.Windows.Forms.Button();
             this.Menu_Title = new System.Windows.Forms.Label();
             this.Menu_Icon = new System.Windows.Forms.PictureBox();
             this.Exit = new System.Windows.Forms.Label();
+            this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.Menu_Panel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Menu_Icon)).BeginInit();
             this.SuspendLayout();
@@ -36,6 +38,7 @@
             // Menu_Panel
             // 
             this.Menu_Panel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(112)))), ((int)(((byte)(38)))), ((int)(((byte)(50)))));
+            this.Menu_Panel.Controls.Add(this.Host_Button);
             this.Menu_Panel.Controls.Add(this.Menu_Title);
             this.Menu_Panel.Controls.Add(this.Menu_Icon);
             this.Menu_Panel.Dock = System.Windows.Forms.DockStyle.Left;
@@ -43,6 +46,19 @@
             this.Menu_Panel.Name = "Menu_Panel";
             this.Menu_Panel.Size = new System.Drawing.Size(784, 821);
             this.Menu_Panel.TabIndex = 0;
+            // 
+            // Host_Button
+            // 
+            this.Host_Button.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(27)))), ((int)(((byte)(28)))), ((int)(((byte)(33)))));
+            this.Host_Button.Font = new System.Drawing.Font("Impact", 27.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Host_Button.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(250)))));
+            this.Host_Button.Location = new System.Drawing.Point(300, 334);
+            this.Host_Button.Name = "Host_Button";
+            this.Host_Button.Size = new System.Drawing.Size(180, 64);
+            this.Host_Button.TabIndex = 2;
+            this.Host_Button.Text = "Host";
+            this.Host_Button.UseVisualStyleBackColor = false;
+            this.Host_Button.Click += new System.EventHandler(this.Host_Button_Click);
             // 
             // Menu_Title
             // 
@@ -102,6 +118,8 @@
         private System.Windows.Forms.PictureBox Menu_Icon;
         private System.Windows.Forms.Label Menu_Title;
         private System.Windows.Forms.Label Exit;
+        private System.Windows.Forms.Button Host_Button;
+        private System.Windows.Forms.SaveFileDialog saveFileDialog1;
     }
 }
 

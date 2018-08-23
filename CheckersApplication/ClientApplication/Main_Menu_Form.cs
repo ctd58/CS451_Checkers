@@ -25,7 +25,14 @@ namespace ClientApplication
             this.Close();
         }
 
-        
+        private void Host_Button_Click(object sender, EventArgs e) {
+            var frm = new Game_Form();
+            frm.Location = this.Location;
+            frm.StartPosition = FormStartPosition.Manual;
+            frm.FormClosing += delegate { this.Show(); };
+            frm.Show();
+            this.Hide();
+        }
     }
 
 }
