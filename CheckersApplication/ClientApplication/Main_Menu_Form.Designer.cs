@@ -31,6 +31,7 @@
             this.Menu_Icon = new System.Windows.Forms.PictureBox();
             this.Exit = new System.Windows.Forms.Label();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
+            this.Join_Button = new System.Windows.Forms.Button();
             this.Menu_Panel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Menu_Icon)).BeginInit();
             this.SuspendLayout();
@@ -38,6 +39,7 @@
             // Menu_Panel
             // 
             this.Menu_Panel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(112)))), ((int)(((byte)(38)))), ((int)(((byte)(50)))));
+            this.Menu_Panel.Controls.Add(this.Join_Button);
             this.Menu_Panel.Controls.Add(this.Host_Button);
             this.Menu_Panel.Controls.Add(this.Menu_Title);
             this.Menu_Panel.Controls.Add(this.Menu_Icon);
@@ -93,6 +95,19 @@
             this.Exit.Text = "x";
             this.Exit.Click += new System.EventHandler(this.Exit_Click);
             // 
+            // Join_Button
+            // 
+            this.Join_Button.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(27)))), ((int)(((byte)(28)))), ((int)(((byte)(33)))));
+            this.Join_Button.Font = new System.Drawing.Font("Impact", 27.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Join_Button.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(250)))));
+            this.Join_Button.Location = new System.Drawing.Point(300, 427);
+            this.Join_Button.Name = "Join_Button";
+            this.Join_Button.Size = new System.Drawing.Size(180, 64);
+            this.Join_Button.TabIndex = 3;
+            this.Join_Button.Text = "Join";
+            this.Join_Button.UseVisualStyleBackColor = false;
+            this.Join_Button.Click += new System.EventHandler(this.Join_Button_Click);
+            // 
             // Main_Menu_Form
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -120,6 +135,7 @@
         private System.Windows.Forms.Label Exit;
         private System.Windows.Forms.Button Host_Button;
         private System.Windows.Forms.SaveFileDialog saveFileDialog1;
+        private System.Windows.Forms.Button Join_Button;
     }
 }
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System;
 using System.Net.Sockets;
@@ -30,6 +31,7 @@ namespace ClientApplication
 
         public Client() {
             currentGame = new ClientCheckersGame();
+            Console.WriteLine("Client Succesfully Created...");
         }
 
         public void ConnectToServer()

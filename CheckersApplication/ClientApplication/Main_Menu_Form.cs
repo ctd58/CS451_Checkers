@@ -7,6 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using ServerApplication;
+using System.Windows.Forms;
+
 
 namespace ClientApplication
 {
@@ -26,7 +29,17 @@ namespace ClientApplication
         }
 
         private void Host_Button_Click(object sender, EventArgs e) {
-            var frm = new Game_Form();
+            // Open Game form
+            var frm = new Game_Form(true);
+            frm.Location = this.Location;
+            frm.StartPosition = FormStartPosition.Manual;
+            frm.FormClosing += delegate { this.Show(); };
+            frm.Show();
+            this.Hide();
+        }
+
+        private void Join_Button_Click(object sender, EventArgs e) {
+            var frm = new Game_Form(false);
             frm.Location = this.Location;
             frm.StartPosition = FormStartPosition.Manual;
             frm.FormClosing += delegate { this.Show(); };
