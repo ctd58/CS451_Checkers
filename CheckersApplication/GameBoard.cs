@@ -13,7 +13,7 @@ public class GameBoard
 {
     #region Attributes
 
-    private int currentPlayer = 1; //player 1 and 2
+    private int currentPlayer = 1; //player 1 and 2, 1 is always red, 2 is always black
     private DateTime timerExpires = DateTime.Now;
 
     private CheckerPieces[,] gameBoard = new CheckerPieces[8, 8];
@@ -164,17 +164,28 @@ public class GameBoard
     public bool ApplyMove(PlayerMove move) {
 
         List<CKPoint> listPoints = move.GetPlayerMove();
+        if(listPoints.Count < 2)
+        {
+            return false;
+        }
         CKPoint startingPoint = listPoints[0]; // A move will always be at least 2 long, with index 0 being the starting point
         CKPoint endingPoint = listPoints[listPoints.Count - 1];
         CheckerPieces piece = gameBoard[startingPoint.GetColumn(), startingPoint.GetRow()]; // Column is x, Row is y
+        if(piece == CheckerPieces.Empty)
+        {
+            return false;
+        }
         CheckerPieces[] opponentPieces = new CheckerPieces[2];
-        if (piece == CheckerPieces.Red || piece == CheckerPieces.RedKing) {
+        if (piece == CheckerPieces.Red || piece == CheckerPieces.RedKing && currentPlayer == 1) {
             opponentPieces[0] = CheckerPieces.Black;
             opponentPieces[1] = CheckerPieces.BlackKing;
         }
-        else if (piece == CheckerPieces.Black || piece == CheckerPieces.BlackKing) {
+        else if (piece == CheckerPieces.Black || piece == CheckerPieces.BlackKing && currentPlayer == 2) {
             opponentPieces[0] = CheckerPieces.Red;
             opponentPieces[1] = CheckerPieces.RedKing;
+        }
+        else{
+            return false; // you moved the wrong peice
         }
 
         CKPoint fromPoint = startingPoint;

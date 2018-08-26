@@ -144,25 +144,21 @@ namespace ServerApplication {
                     formatter.Binder = new PreMergeToMergedDeserializationBinder();
                     deserializedPM = (PlayerMove)formatter.Deserialize(stream);
                 }
-                //Console.WriteLine("PlayerMove: From(" + deserializedPM.GetPlayerMove()[0].GetRow().ToString() + " , " + deserializedPM.GetPlayerMove()[0].GetColumn().ToString() + ")");
-                //Console.WriteLine("PlayerMove: To(" + deserializedPM.GetPlayerMove()[1].GetRow().ToString() + " , " + deserializedPM.GetPlayerMove()[1].GetColumn().ToString() + ")");
+                Console.WriteLine("PlayerMove: From(" + deserializedPM.GetPlayerMove()[0].GetRow().ToString() + " , " + deserializedPM.GetPlayerMove()[0].GetColumn().ToString() + ")");
+                Console.WriteLine("PlayerMove: To(" + deserializedPM.GetPlayerMove()[1].GetRow().ToString() + " , " + deserializedPM.GetPlayerMove()[1].GetColumn().ToString() + ")");
                 //if move was invalid
-                if (deserializedPM.GetPlayerMove().Count == 1)
-                {
-                    Console.WriteLine("Move was Invalid");
-                    SendMessage(MessageIdentifiers.RetryGameUpdate, null);
-                }
-                else if(deserializedPM.GetPlayerMove().Count == 0)
-                {
-                    Console.WriteLine("Player Won");
-                    tempWinCheck = true;
-                    AppliedPlayerMove = true;
-                }
-                else
+                currentGame.SetCurrentPlayerMove(deserializedPM);
+                if (currentGame.ApplyMove())
                 {
                     Console.WriteLine("Move was valid");
                     AppliedPlayerMove = true;
                 }
+                else
+                {
+                    Console.WriteLine("Move was Invalid");
+                    SendMessage(MessageIdentifiers.RetryGameUpdate, null);
+                }
+                currentGame.GetGameBoard().PrintBoard();
 
             }
             else
@@ -273,7 +269,14 @@ namespace ServerApplication {
                     break;
                 case MessageIdentifiers.GameOver:
                     //Set the game over message
-                    appended = Encoding.ASCII.GetBytes("Someone Won the Game");
+                    GameStatus status = currentGame.GetGameStatus();
+                    appended = Encoding.ASCII.GetBytes("");
+                    if (GameStatus.Player1Wins == status)
+                        appended = Encoding.ASCII.GetBytes("Player 1 Wins !!!");
+                    else if (GameStatus.Player2Wins == status)
+                        appended = Encoding.ASCII.GetBytes("Player 2 Wins !!!");
+                    else if (GameStatus.Draw == status)
+                        appended = Encoding.ASCII.GetBytes("It's a Draw !!!");
 
                     identifier = Encoding.ASCII.GetBytes(MessageIdentifiers.GameOver.ToString("d"));
                     data = Combine(identifier, appended);
@@ -357,7 +360,7 @@ namespace ServerApplication {
             Console.WriteLine("Next Turn");
 
             //check for win first, other wise send to get a move from a player
-            if (tempWinCheck)
+            if (currentGame.GetGameStatus() != GameStatus.InProgress)
             {
                 SendMessage(MessageIdentifiers.GameOver, null);
             }

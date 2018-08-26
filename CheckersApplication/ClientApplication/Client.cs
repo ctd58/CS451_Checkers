@@ -140,9 +140,12 @@ namespace ClientApplication
             {
                 string text = Encoding.ASCII.GetString(messageBytes);
                 gameForm.SetOutputBox(text);
+                temp = 0;
             }
             else if (identifier == MessageIdentifiers.TwoPlayersConnected.ToString("d"))
             {
+                if (temp == -1)
+                    temp = 1;
                 Sclass1 deserializedClass;
 
                 IFormatter formatter = new BinaryFormatter();
@@ -172,10 +175,12 @@ namespace ClientApplication
                     gameForm.SetTurnBox("");
                     gameForm.SetTurnBox("Your Turn");
                     //Get and Send PlayerMove
+                    gameForm.EnableInputs();
                     SendMessage(MessageIdentifiers.GameUpdate);
                 }
                 else
                 {
+                    gameForm.DisableInputs();
                     gameForm.SetOutputBox("Is not my turn");
                     gameForm.SetTurnBox("");
                     gameForm.SetTurnBox("Not Your Turn");
@@ -198,6 +203,8 @@ namespace ClientApplication
             ReceiveResponse();
         }
 
+        private int temp = -1;
+
         public void SendMessage(MessageIdentifiers id)
         {
             byte[] appended;
@@ -213,28 +220,48 @@ namespace ClientApplication
                     ClientSocket.Send(data);
                     break;
                 case MessageIdentifiers.GameUpdate:
-                    string request = "test";
+          
                     while (gameForm.test == false) { }
                     gameForm.SetSubmitMove(false);
-
                     PlayerMove pm = new PlayerMove();
-                    CKPoint ck1 = new CKPoint(1, 1);
-                    CKPoint ck2 = new CKPoint(2, 2);
-
-                    if (request == "cheat")
+                    CKPoint ck1;
+                    CKPoint ck2;
+                    switch (temp)
                     {
-                        pm.BuildMove(ck1);
+                        case 0:
+                            ck1 = new CKPoint(1, 2);
+                            ck2 = new CKPoint(2, 3);
+                            break;
+                        case 1:
+                            ck1 = new CKPoint(0, 5);
+                            ck2 = new CKPoint(1, 4);
+                            break;
+                        case 2:
+                            ck1 = new CKPoint(3, 2);
+                            ck2 = new CKPoint(4, 3);
+                            break;
+                        case 3:
+                            ck1 = new CKPoint(3, 5);
+                            ck2 = new CKPoint(4, 4);
+                            break;
+                        case 4:
+                            ck1 = new CKPoint(1, 2);
+                            ck2 = new CKPoint(2, 3);
+                            break;
+                        case 5:
+                            ck1 = new CKPoint(1, 2);
+                            ck2 = new CKPoint(2, 3);
+                            break;
+                        default:
+                            ck1 = new CKPoint(0, 0);
+                            ck2 = new CKPoint(0, 0);
+                            break;
                     }
-                    else if(request == "win")
-                    {
-                        
-                    }
-                    else
-                    {
-                        //set appended to player move
-                        pm.BuildMove(ck1);
-                        pm.BuildMove(ck2);
-                    }
+                    temp += 2;
+                    //set appended to player move
+                    pm.BuildMove(ck1);
+                    pm.BuildMove(ck2);
+                    
 
                     IFormatter formatter = new BinaryFormatter();
                     using (MemoryStream stream = new MemoryStream())
