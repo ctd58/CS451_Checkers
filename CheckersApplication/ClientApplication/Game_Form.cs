@@ -120,13 +120,13 @@ namespace ClientApplication {
 
         public void DisableInputs()
         {
-            button1.BeginInvoke((Action)delegate () { button1.Enabled = false; });
+            button1.BeginInvoke((Action)delegate () { button1.Enabled = false; Reset_Move_Button.Enabled = false; });
             playerMove.RestartMove();
         }
 
         public void EnableInputs()
         {
-            button1.BeginInvoke((Action)delegate () { button1.Enabled = true; });
+            button1.BeginInvoke((Action)delegate () { button1.Enabled = true; Reset_Move_Button.Enabled = true; });
             playerMove.RestartMove();
         }
 
