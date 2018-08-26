@@ -220,7 +220,6 @@ public class GameBoard
                 else if (piece == CheckerPieces.Black) {
                     if (fromPoint.GetRow() - point.GetRow() != 1 || gameBoard[point.GetRow(), point.GetColumn()] != CheckerPieces.Empty) {
                         // Throw error
-                        Console.WriteLine(fromPoint.GetRow() + " " + point.GetRow());
                         throw new InvalidOperationException("Black piece single move invalid");
                         //return false;
                     }
@@ -237,8 +236,8 @@ public class GameBoard
                 gameBoard[point.GetRow(), point.GetColumn()] = piece;
             }
             else if (Math.Abs(fromPoint.GetRow() - point.GetRow()) == 2) { // Jumping to take pieces
-                int middleColumn = (fromPoint.GetColumn() - point.GetColumn()) / 2;
-                int middleRow = point.GetRow() - 1;
+                int middleColumn = Math.Abs(fromPoint.GetColumn() + point.GetColumn()) / 2;
+                int middleRow = Math.Abs(fromPoint.GetRow() + point.GetRow()) / 2;
                 if (piece == CheckerPieces.Red) {
                     if (fromPoint.GetRow() - point.GetRow() != -2 || gameBoard[point.GetRow(), point.GetColumn()] != CheckerPieces.Empty ||
                     (gameBoard[middleRow, middleColumn] != CheckerPieces.Black && gameBoard[middleRow, middleColumn] != CheckerPieces.BlackKing)) {
@@ -251,6 +250,11 @@ public class GameBoard
                     if (fromPoint.GetRow() - point.GetRow() != 2 || gameBoard[point.GetRow(), point.GetColumn()] != CheckerPieces.Empty ||
                     (gameBoard[middleRow, middleColumn] != opponentPieces[0] && gameBoard[middleRow, middleColumn] != opponentPieces[1])) {
                         // Throw error
+                        Console.WriteLine(fromPoint.GetRow() + " " + point.GetRow());
+                        Console.WriteLine(gameBoard[point.GetRow(), point.GetColumn()]);
+                        Console.WriteLine(gameBoard[middleRow, middleColumn]);
+                        Console.WriteLine(middleRow);
+                        Console.WriteLine(middleColumn);
                         throw new InvalidOperationException("Black piece single jump invalid");
                         //return false;
                     }

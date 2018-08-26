@@ -78,6 +78,7 @@ namespace ServerApplication {
             try
             {
                 currentPlayerMove.RestartMove();
+                currentPlayerMove.SwitchPlayer();
             }
             catch(Exception e) { Console.WriteLine("Empty CurrentPlayerMove"); }
             int newCurrentPlayer = (gameBoard.GetCurrentPlayer() == 1) ? 2 : 1;
