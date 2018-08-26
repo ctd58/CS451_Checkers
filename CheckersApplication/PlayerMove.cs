@@ -41,7 +41,6 @@ public class PlayerMove
 
     public void BuildMove(CKPoint point) {
         //RestartMove();
-
         move.Add(point);
     }
 

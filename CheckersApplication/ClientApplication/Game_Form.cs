@@ -31,7 +31,7 @@ namespace ClientApplication {
             this.host = host;
             FillBoardPositions();
             playerMove = new PlayerMove();
-    }
+        }
 
         private void FillBoardPositions() {
             int x = 4;
@@ -115,17 +115,19 @@ namespace ClientApplication {
         public PlayerMove SubmitPlayerMove()
         {
             waitingToSubmit = false;
-            return new PlayerMove();
+            return playerMove;
         }
 
         public void DisableInputs()
         {
             button1.BeginInvoke((Action)delegate () { button1.Enabled = false; });
+            playerMove.RestartMove();
         }
 
         public void EnableInputs()
         {
             button1.BeginInvoke((Action)delegate () { button1.Enabled = true; });
+            playerMove.RestartMove();
         }
 
 
@@ -199,7 +201,10 @@ namespace ClientApplication {
 
         private void button1_Click(object sender, EventArgs e)
         {
-            waitingToSubmit = true;
+            if (playerMove.GetPlayerMove().Count > 1)
+            {
+                waitingToSubmit = true;
+            }
             //client.ReceiveResponse();
         }
 

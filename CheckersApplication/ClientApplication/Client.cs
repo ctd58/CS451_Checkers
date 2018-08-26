@@ -217,7 +217,11 @@ namespace ClientApplication
                 case MessageIdentifiers.GameUpdate:
           
                     while (gameForm.waitingToSubmit == false) { }
-                    PlayerMove pm = gameForm.SubmitPlayerMove();          
+                    PlayerMove pm = gameForm.SubmitPlayerMove();
+                    foreach (CKPoint p in pm.GetPlayerMove())
+                    {
+                        System.Diagnostics.Debug.WriteLine(p.GetRow() + " " + p.GetColumn());
+                    }
 
                     IFormatter formatter = new BinaryFormatter();
                     using (MemoryStream stream = new MemoryStream())
