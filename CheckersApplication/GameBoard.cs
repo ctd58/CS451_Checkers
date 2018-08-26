@@ -173,10 +173,12 @@ public class GameBoard
         CheckerPieces piece = gameBoard[startingPoint.GetRow(), startingPoint.GetColumn()]; // Column is x, Row is y
         Console.WriteLine(startingPoint.GetRow() + " " + startingPoint.GetColumn());
         Console.WriteLine(endingPoint.GetRow() + " " + endingPoint.GetColumn());
+        Console.WriteLine(piece);
         if(piece == CheckerPieces.Empty)
         {
             return false;
         }
+        Console.WriteLine("test");
         CheckerPieces[] opponentPieces = new CheckerPieces[2];
         if (piece == CheckerPieces.Red || piece == CheckerPieces.RedKing && currentPlayer == 1) {
             opponentPieces[0] = CheckerPieces.Black;

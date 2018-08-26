@@ -46,7 +46,10 @@ namespace ClientApplication {
 
         private void ClearPieces() {
             foreach (Button piece in  activePieces) {
-                piece.Dispose();
+                this.BeginInvoke((Action)delegate () {
+                    piece.Dispose();
+                });
+                
             }
             activePieces.Clear();
         }

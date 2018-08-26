@@ -245,8 +245,7 @@ namespace ClientApplication
                             ck2 = new CKPoint(4, 3);
                             break;
                         case 4:
-                            ck1 = new CKPoint(2, 3);
-                            ck2 = new CKPoint(0, 5);
+                            ck2 = new CKPoint(5, 0);
                             break;
                         case 5:
                             ck1 = new CKPoint(2, 3);
