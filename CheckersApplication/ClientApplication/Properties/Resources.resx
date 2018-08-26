@@ -124,6 +124,9 @@
   <data name="Black_Piece_King" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Black_Piece_King.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="Checker_Board" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Checker_Board.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="Red_Piece" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Red_Piece.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>

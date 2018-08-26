@@ -31,8 +31,8 @@ namespace ClientApplication {
         }
 
         private void FillBoardPositions() {
-            int x = 322;
-            int y = 24;
+            int x = 4;
+            int y = 4;
             int step = 72;
             for (int i = 0; i < 8; i++) {
                 for (int j = 0; j < 8; j++) {
@@ -40,8 +40,15 @@ namespace ClientApplication {
                     x += step;
                 }
                 y += step;
-                x = 322;
+                x = 4;
             }
+        }
+
+        private void ClearPieces() {
+            foreach (Button piece in  activePieces) {
+                piece.Dispose();
+            }
+            activePieces.Clear();
         }
 
         private Button CreatePiece(Point pos, CKPoint point, CheckerPieces Ptype) {
@@ -78,7 +85,7 @@ namespace ClientApplication {
                     break;
             }
 
-            this.BeginInvoke((Action)delegate () { this.Controls.Add(piece); piece.BringToFront(); });
+            this.BeginInvoke((Action)delegate () { this.Controls.Add(piece); piece.BringToFront(); piece.Parent = Board; piece.BackColor = Color.Transparent; Board.Refresh();});
             return piece;
         }
 
@@ -150,7 +157,7 @@ namespace ClientApplication {
 
         public void UpdateBoard(GameBoard game) {
             if(activePieces != null)
-                activePieces.Clear();
+                ClearPieces();
             CheckerPieces[,] gameBoard = game.GetGameBoard();
             for (int i = 0; i < 8; i++) {
                 for (int j = 0; j < 8; j++) {

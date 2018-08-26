@@ -52,6 +52,7 @@
             // Join_Button
             // 
             this.Join_Button.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(27)))), ((int)(((byte)(28)))), ((int)(((byte)(33)))));
+            this.Join_Button.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.Join_Button.Font = new System.Drawing.Font("Impact", 27.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Join_Button.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(250)))));
             this.Join_Button.Location = new System.Drawing.Point(300, 427);
@@ -65,6 +66,7 @@
             // Host_Button
             // 
             this.Host_Button.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(27)))), ((int)(((byte)(28)))), ((int)(((byte)(33)))));
+            this.Host_Button.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.Host_Button.Font = new System.Drawing.Font("Impact", 27.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Host_Button.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(250)))));
             this.Host_Button.Location = new System.Drawing.Point(300, 334);
