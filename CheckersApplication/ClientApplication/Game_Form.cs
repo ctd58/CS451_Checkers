@@ -43,6 +43,16 @@ namespace ClientApplication {
             test = value;
         }
 
+        public void DisableInputs()
+        {
+            button1.BeginInvoke((Action)delegate () { button1.Enabled = false; });
+        }
+
+        public void EnableInputs()
+        {
+            button1.BeginInvoke((Action)delegate () { button1.Enabled = true; });
+        }
+
 
         public void SetOutputBox(string text)
         {

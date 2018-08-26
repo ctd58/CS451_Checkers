@@ -43,7 +43,7 @@ namespace ServerApplication {
         }
 
         public GameStatus GetGameStatus() {
-            return gameBoard.GetGameStatus();
+            return gameBoard.CheckForWin();
         }
 
         public GameBoard GetGameBoard() {
@@ -63,7 +63,7 @@ namespace ServerApplication {
         public bool ApplyMove() {
 
             try {
-                gameBoard.ApplyMove(currentPlayerMove);
+                return gameBoard.ApplyMove(currentPlayerMove);
             }
             catch (InvalidOperationException e) {
                 Console.WriteLine("You cheater!");
@@ -71,7 +71,6 @@ namespace ServerApplication {
                 Console.WriteLine(e.ToString());
                 return false;
             }
-            return true;
         }
 
         public void SwitchTurns() {
