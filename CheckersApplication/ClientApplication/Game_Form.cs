@@ -24,11 +24,14 @@ namespace ClientApplication {
         private List<Button> activePieces = new List<Button>();
         private Point[,] boardPositions = new Point[8, 8];
 
+        private PlayerMove playerMove;
+
         public Game_Form(bool host) {
             InitializeComponent();
             this.host = host;
             FillBoardPositions();
-        }
+            playerMove = new PlayerMove();
+    }
 
         private void FillBoardPositions() {
             int x = 4;
@@ -206,8 +209,11 @@ namespace ClientApplication {
                 return;
             }
             Button button = sender as Button;
-            CKPoint point = (CKPoint)button.Tag;
-            System.Diagnostics.Debug.WriteLine("Point: " + point.GetRow() + "," + point.GetColumn());
+            if (playerMove.IsEmpty()) {
+                CKPoint point = (CKPoint)button.Tag;
+                playerMove.BuildMove(point);
+                System.Diagnostics.Debug.WriteLine("Point: " + point.GetRow() + "," + point.GetColumn());
+            }
             // identify which button was clicked and perform necessary actions
         }
         protected void RedKingbutton_Click(object sender, EventArgs e)
@@ -217,8 +223,11 @@ namespace ClientApplication {
                 return;
             }
             Button button = sender as Button;
-            CKPoint point = (CKPoint)button.Tag;
-            System.Diagnostics.Debug.WriteLine("Point: " + point.GetRow() + "," + point.GetColumn());
+            if (playerMove.IsEmpty()) {
+                CKPoint point = (CKPoint)button.Tag;
+                playerMove.BuildMove(point);
+                System.Diagnostics.Debug.WriteLine("Point: " + point.GetRow() + "," + point.GetColumn());
+            }
             // identify which button was clicked and perform necessary actions
         }
         protected void Blackbutton_Click(object sender, EventArgs e)
@@ -228,8 +237,11 @@ namespace ClientApplication {
                 return;
             }
             Button button = sender as Button;
-            CKPoint point = (CKPoint)button.Tag;
-            System.Diagnostics.Debug.WriteLine("Point: " + point.GetRow() + "," + point.GetColumn());
+            if (playerMove.IsEmpty()) {
+                CKPoint point = (CKPoint)button.Tag;
+                playerMove.BuildMove(point);
+                System.Diagnostics.Debug.WriteLine("Point: " + point.GetRow() + "," + point.GetColumn());
+            }
             // identify which button was clicked and perform necessary actions
         }
         protected void BlackKingbutton_Click(object sender, EventArgs e)
@@ -239,16 +251,26 @@ namespace ClientApplication {
                 return;
             }
             Button button = sender as Button;
-            CKPoint point = (CKPoint)button.Tag;
-            System.Diagnostics.Debug.WriteLine("Point: " + point.GetRow() + "," + point.GetColumn());
+            if (playerMove.IsEmpty()) {
+                CKPoint point = (CKPoint)button.Tag;
+                playerMove.BuildMove(point);
+                System.Diagnostics.Debug.WriteLine("Point: " + point.GetRow() + "," + point.GetColumn());
+            }
             // identify which button was clicked and perform necessary actions
         }
         protected void Emptybutton_Click(object sender, EventArgs e)
         {
             Button button = sender as Button;
-            CKPoint point = (CKPoint)button.Tag;
-            System.Diagnostics.Debug.WriteLine("Point: " + point.GetRow() + "," + point.GetColumn());
+            if (playerMove.GetSize() >= 1) {
+                CKPoint point = (CKPoint)button.Tag;
+                playerMove.BuildMove(point);
+                System.Diagnostics.Debug.WriteLine("Point: " + point.GetRow() + "," + point.GetColumn());
+            }
             // identify which button was clicked and perform necessary actions
+        }
+
+        private void Reset_Move_Button_Click(object sender, EventArgs e) {
+            playerMove.RestartMove();
         }
     }
 }

@@ -21,6 +21,17 @@ public class PlayerMove
 
     #region Getters and Setters
 
+    public bool IsEmpty() {
+        if (move.Count == 0)
+            return true;
+        else
+            return false;
+    }
+
+    public int GetSize() {
+        return move.Count;
+    }
+
     public List<CKPoint> GetPlayerMove() {
         return move;
     }
