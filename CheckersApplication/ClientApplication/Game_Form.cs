@@ -16,6 +16,10 @@ using System.Diagnostics;
 namespace ClientApplication {
     public partial class Game_Form : Form {
         bool host;
+        delegate void StringArgReturningVoidDelegate(string text);
+        Client client;
+        Task clientTask;
+        public bool test = false;
 
         public Game_Form(bool host) {
             InitializeComponent();
@@ -34,22 +38,72 @@ namespace ClientApplication {
             return tbTurn;
         }
 
+        public void SetSubmitMove(bool value)
+        {
+            test = value;
+        }
+
+
+        public void SetOutputBox(string text)
+        {
+            // InvokeRequired required compares the thread ID of the
+            // calling thread to the thread ID of the creating thread.
+            // If these threads are different, it returns true.
+            if (this.tbConsole.InvokeRequired)
+            {
+                StringArgReturningVoidDelegate d = new StringArgReturningVoidDelegate(SetOutputBox);
+                this.Invoke(d, new object[] { text });
+            }
+            else
+            {
+                if (text == "")
+                    this.tbConsole.Text = "";
+                else
+                    this.tbConsole.Text += text + "\r\n";
+            }
+        }
+
+        public void SetTurnBox(string text)
+        {
+            // InvokeRequired required compares the thread ID of the
+            // calling thread to the thread ID of the creating thread.
+            // If these threads are different, it returns true.
+            if (this.tbConsole.InvokeRequired)
+            {
+                StringArgReturningVoidDelegate d = new StringArgReturningVoidDelegate(SetTurnBox);
+                this.Invoke(d, new object[] { text });
+            }
+            else
+            {
+                if (text == "")
+                    this.tbTurn.Text = "";
+                else
+                    this.tbTurn.Text += text + "\r\n";
+            }
+        }
+
         private void RunServer() {
             Process.Start(Application.StartupPath.ToString() + @"\ServerApplication.exe");
         }
 
         private void RunClient() {
-            Client client = new Client(this);
+            client = new Client(this);
             client.ConnectToServer(); //2. START TRYING TO CONNECT TO SERVER
         }
 
         private void Game_Form_Shown(object sender, EventArgs e) {
             if (host) {
                 Task serverTask = Task.Factory.StartNew(() => RunServer());
-                Task clientTask = Task.Factory.StartNew(() => RunClient());
+                clientTask = Task.Factory.StartNew(() => RunClient());
             } else {
-                Task clientTask = Task.Factory.StartNew(() => RunClient());
+                clientTask = Task.Factory.StartNew(() => RunClient());
             }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            test = true;
+            //client.ReceiveResponse();
         }
     }
 }

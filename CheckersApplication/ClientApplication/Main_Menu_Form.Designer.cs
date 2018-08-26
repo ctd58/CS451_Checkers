@@ -116,7 +116,6 @@
             this.ClientSize = new System.Drawing.Size(944, 821);
             this.Controls.Add(this.Exit);
             this.Controls.Add(this.Menu_Panel);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "Main_Menu_Form";
             this.Text = "Main_Menu_Form";
             this.Menu_Panel.ResumeLayout(false);
