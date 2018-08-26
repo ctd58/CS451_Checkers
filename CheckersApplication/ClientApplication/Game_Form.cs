@@ -21,9 +21,38 @@ namespace ClientApplication {
         Task clientTask;
         public bool test = false;
 
+        private List<Button> activePieces;
+        private Point[,] boardPositions = new Point[8, 8];
+
         public Game_Form(bool host) {
             InitializeComponent();
             this.host = host;
+            FillBoardPositions();
+        }
+
+        private void FillBoardPositions() {
+            int x = 322;
+            int y = 24;
+            int step = 72;
+            for (int i = 0; i < 8; i++) {
+                for (int j = 0; j < 8; j++) {
+                    boardPositions[i, j] = new Point(x, y);
+                    x += step;
+                }
+                y += step;
+                x = 322;
+            }
+        }
+
+        private Button CreatePiece() {
+            Button piece = new Button();
+            piece.TabStop = false;
+            piece.FlatStyle = FlatStyle.Flat;
+            piece.FlatAppearance.BorderSize = 0;
+            piece.Width = 64;
+            piece.Height = 64;
+            piece.Image = Properties.Resources.Red_Piece;
+            return piece;
         }
 
         private void Exit_Click(object sender, EventArgs e) {
@@ -79,6 +108,20 @@ namespace ClientApplication {
                     this.tbTurn.Text = "";
                 else
                     this.tbTurn.Text += text + "\r\n";
+            }
+        }
+
+        public void UpdateBoard(GameBoard game) {
+            activePieces.Clear();
+            CheckerPieces[,] gameBoard = game.GetGameBoard();
+            for (int i = 0; i < 8; i++) {
+                for (int j = 0; j < 8; j++) {
+                    if (gameBoard[i,j] == CheckerPieces.Red) {
+                        activePieces.Add(CreatePiece());
+                    } else if (gameBoard[i, j] == CheckerPieces.Black) {
+                        activePieces.Add(CreatePiece());
+                    }
+                }
             }
         }
 

@@ -37,7 +37,7 @@ namespace ClientApplication
         private Game_Form gameForm;
 
         public Client(Game_Form game) {
-            currentGame = new ClientCheckersGame();
+            currentGame = new ClientCheckersGame(game);
             gameForm = game;
             output = game.GetOutputBox();
             turnText = game.GetTurnBox();
@@ -163,6 +163,7 @@ namespace ClientApplication
                 {
                     formatter.Binder = new PreMergeToMergedDeserializationBinder();
                     currentGame.UpdateBoard((GameBoard)formatter.Deserialize(stream));
+                    gameForm.UpdateBoard((GameBoard)formatter.Deserialize(stream));
                 }
                 if (currentGame.IsMyTurn())
                 {
@@ -171,7 +172,6 @@ namespace ClientApplication
                     gameForm.SetTurnBox("Your Turn");
                     //Get and Send PlayerMove
                     SendMessage(MessageIdentifiers.GameUpdate);
-
                 }
                 else
                 {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace ClientApplication {
     public class ClientCheckersGame {
@@ -13,11 +14,14 @@ namespace ClientApplication {
         private const float TURNTIME = 10.0f;
 
         private GameBoard gameBoard;
+
+        private Game_Form gameForm;
         #endregion
 
         #region Constructors
 
-        public ClientCheckersGame() {
+        public ClientCheckersGame(Game_Form game) {
+            gameForm = game;
             gameBoard = new GameBoard();
         }
         #endregion
