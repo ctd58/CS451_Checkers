@@ -59,15 +59,15 @@ namespace ClientApplication {
                     piece.Click += new EventHandler(Redbutton_Click);
                     break;
                 case CheckerPieces.RedKing:
-                    piece.Image = Properties.Resources.Red_Piece;
+                    piece.Image = Properties.Resources.Red_Piece_King;
                     piece.Click += new EventHandler(RedKingbutton_Click);
                     break;
                 case CheckerPieces.Black:
-                    piece.Image = Properties.Resources.Red_Piece;
+                    piece.Image = Properties.Resources.Black_Piece;
                     piece.Click += new EventHandler(Blackbutton_Click);
                     break;
                 case CheckerPieces.BlackKing:
-                    piece.Image = Properties.Resources.Red_Piece;
+                    piece.Image = Properties.Resources.Black_Piece_King;
                     piece.Click += new EventHandler(BlackKingbutton_Click);
                     break;
                 case CheckerPieces.Empty:
