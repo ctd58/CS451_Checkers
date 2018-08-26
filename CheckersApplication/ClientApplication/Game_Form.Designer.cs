@@ -26,9 +26,9 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Game_Form));
             this.Exit = new System.Windows.Forms.Label();
             this.tbConsole = new System.Windows.Forms.TextBox();
-            this.Board = new System.Windows.Forms.PictureBox();
             this.tbTurn = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
+            this.Board = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.Board)).BeginInit();
             this.SuspendLayout();
             // 
@@ -55,35 +55,39 @@
             this.tbConsole.Size = new System.Drawing.Size(921, 202);
             this.tbConsole.TabIndex = 4;
             // 
-            // Board
-            // 
-            this.Board.Image = ((System.Drawing.Image)(resources.GetObject("Board.Image")));
-            this.Board.Location = new System.Drawing.Point(332, 20);
-            this.Board.Name = "Board";
-            this.Board.Size = new System.Drawing.Size(579, 587);
-            this.Board.TabIndex = 5;
-            this.Board.TabStop = false;
-            // 
             // tbTurn
             // 
             this.tbTurn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(27)))), ((int)(((byte)(28)))), ((int)(((byte)(33)))));
+            this.tbTurn.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.tbTurn.Font = new System.Drawing.Font("Impact", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tbTurn.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(250)))));
             this.tbTurn.Location = new System.Drawing.Point(71, 33);
             this.tbTurn.Name = "tbTurn";
-            this.tbTurn.Size = new System.Drawing.Size(160, 40);
+            this.tbTurn.ReadOnly = true;
+            this.tbTurn.Size = new System.Drawing.Size(160, 33);
             this.tbTurn.TabIndex = 6;
             this.tbTurn.Text = "Not Your Turn";
             // 
             // button1
             // 
+            this.button1.BackColor = System.Drawing.Color.White;
+            this.button1.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.button1.Location = new System.Drawing.Point(107, 121);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 23);
             this.button1.TabIndex = 7;
-            this.button1.Text = "button1";
-            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Text = "Submit";
+            this.button1.UseVisualStyleBackColor = false;
             this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // Board
+            // 
+            this.Board.Image = ((System.Drawing.Image)(resources.GetObject("Board.Image")));
+            this.Board.Location = new System.Drawing.Point(318, 20);
+            this.Board.Name = "Board";
+            this.Board.Size = new System.Drawing.Size(579, 587);
+            this.Board.TabIndex = 5;
+            this.Board.TabStop = false;
             // 
             // Game_Form
             // 
@@ -93,9 +97,9 @@
             this.ClientSize = new System.Drawing.Size(944, 821);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.tbTurn);
-            this.Controls.Add(this.Board);
             this.Controls.Add(this.tbConsole);
             this.Controls.Add(this.Exit);
+            this.Controls.Add(this.Board);
             this.Name = "Game_Form";
             this.Text = "Game_Form";
             this.Shown += new System.EventHandler(this.Game_Form_Shown);
@@ -109,8 +113,8 @@
 
         private System.Windows.Forms.Label Exit;
         private System.Windows.Forms.TextBox tbConsole;
-        private System.Windows.Forms.PictureBox Board;
         private System.Windows.Forms.TextBox tbTurn;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.PictureBox Board;
     }
 }

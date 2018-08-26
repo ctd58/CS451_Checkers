@@ -21,9 +21,65 @@ namespace ClientApplication {
         Task clientTask;
         public bool test = false;
 
+        private List<Button> activePieces = new List<Button>();
+        private Point[,] boardPositions = new Point[8, 8];
+
         public Game_Form(bool host) {
             InitializeComponent();
             this.host = host;
+            FillBoardPositions();
+        }
+
+        private void FillBoardPositions() {
+            int x = 322;
+            int y = 24;
+            int step = 72;
+            for (int i = 0; i < 8; i++) {
+                for (int j = 0; j < 8; j++) {
+                    boardPositions[i, j] = new Point(x, y);
+                    x += step;
+                }
+                y += step;
+                x = 322;
+            }
+        }
+
+        private Button CreatePiece(Point pos, CKPoint point, CheckerPieces Ptype) {
+            Button piece = new Button();
+            piece.TabStop = false;
+            piece.FlatStyle = FlatStyle.Flat;
+            piece.FlatAppearance.BorderSize = 0;
+            piece.Width = 64;
+            piece.Height = 64;
+            piece.Location = pos;
+            piece.Tag = point;
+            switch (Ptype){
+                case CheckerPieces.Red:
+                    piece.Image = Properties.Resources.Red_Piece;
+                    piece.Click += new EventHandler(Redbutton_Click);
+                    break;
+                case CheckerPieces.RedKing:
+                    piece.Image = Properties.Resources.Red_Piece_King;
+                    piece.Click += new EventHandler(RedKingbutton_Click);
+                    break;
+                case CheckerPieces.Black:
+                    piece.Image = Properties.Resources.Black_Piece;
+                    piece.Click += new EventHandler(Blackbutton_Click);
+                    break;
+                case CheckerPieces.BlackKing:
+                    piece.Image = Properties.Resources.Black_Piece_King;
+                    piece.Click += new EventHandler(BlackKingbutton_Click);
+                    break;
+                case CheckerPieces.Empty:
+                    //piece.Image = Properties.Resources.Red_Piece;
+                    piece.Click += new EventHandler(Emptybutton_Click);
+                    break;
+                default:
+                    break;
+            }
+
+            this.BeginInvoke((Action)delegate () { this.Controls.Add(piece); piece.BringToFront(); });
+            return piece;
         }
 
         private void Exit_Click(object sender, EventArgs e) {
@@ -92,6 +148,18 @@ namespace ClientApplication {
             }
         }
 
+        public void UpdateBoard(GameBoard game) {
+            if(activePieces != null)
+                activePieces.Clear();
+            CheckerPieces[,] gameBoard = game.GetGameBoard();
+            for (int i = 0; i < 8; i++) {
+                for (int j = 0; j < 8; j++) {
+                    if(gameBoard[i,j] != CheckerPieces.blank)
+                        activePieces.Add(CreatePiece(boardPositions[i, j], new CKPoint(i, j), gameBoard[i, j]));
+                }
+            }
+        }
+
         private void RunServer() {
             Process.Start(Application.StartupPath.ToString() + @"\ServerApplication.exe");
         }
@@ -114,6 +182,63 @@ namespace ClientApplication {
         {
             test = true;
             //client.ReceiveResponse();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            UpdateBoard(new GameBoard());
+        }
+        
+        protected void Redbutton_Click(object sender, EventArgs e)
+        {
+            if (client.GetPlayerId() == 2)
+            {
+                return;
+            }
+            Button button = sender as Button;
+            CKPoint point = (CKPoint)button.Tag;
+            System.Diagnostics.Debug.WriteLine("Point: " + point.GetRow() + "," + point.GetColumn());
+            // identify which button was clicked and perform necessary actions
+        }
+        protected void RedKingbutton_Click(object sender, EventArgs e)
+        {
+            if (client.GetPlayerId() == 2)
+            {
+                return;
+            }
+            Button button = sender as Button;
+            CKPoint point = (CKPoint)button.Tag;
+            System.Diagnostics.Debug.WriteLine("Point: " + point.GetRow() + "," + point.GetColumn());
+            // identify which button was clicked and perform necessary actions
+        }
+        protected void Blackbutton_Click(object sender, EventArgs e)
+        {
+            if (client.GetPlayerId() == 1)
+            {
+                return;
+            }
+            Button button = sender as Button;
+            CKPoint point = (CKPoint)button.Tag;
+            System.Diagnostics.Debug.WriteLine("Point: " + point.GetRow() + "," + point.GetColumn());
+            // identify which button was clicked and perform necessary actions
+        }
+        protected void BlackKingbutton_Click(object sender, EventArgs e)
+        {
+            if (client.GetPlayerId() == 1)
+            {
+                return;
+            }
+            Button button = sender as Button;
+            CKPoint point = (CKPoint)button.Tag;
+            System.Diagnostics.Debug.WriteLine("Point: " + point.GetRow() + "," + point.GetColumn());
+            // identify which button was clicked and perform necessary actions
+        }
+        protected void Emptybutton_Click(object sender, EventArgs e)
+        {
+            Button button = sender as Button;
+            CKPoint point = (CKPoint)button.Tag;
+            System.Diagnostics.Debug.WriteLine("Point: " + point.GetRow() + "," + point.GetColumn());
+            // identify which button was clicked and perform necessary actions
         }
     }
 }

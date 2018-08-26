@@ -37,7 +37,7 @@ namespace ClientApplication
         private Game_Form gameForm;
 
         public Client(Game_Form game) {
-            currentGame = new ClientCheckersGame();
+            currentGame = new ClientCheckersGame(game);
             gameForm = game;
             output = game.GetOutputBox();
             turnText = game.GetTurnBox();
@@ -165,7 +165,9 @@ namespace ClientApplication
                 using (MemoryStream stream = new MemoryStream(messageBytes))
                 {
                     formatter.Binder = new PreMergeToMergedDeserializationBinder();
-                    currentGame.UpdateBoard((GameBoard)formatter.Deserialize(stream));
+                    GameBoard temp = (GameBoard)formatter.Deserialize(stream);
+                    currentGame.UpdateBoard(temp);
+                    gameForm.UpdateBoard(temp);
                 }
                 if (currentGame.IsMyTurn())
                 {
@@ -175,7 +177,6 @@ namespace ClientApplication
                     //Get and Send PlayerMove
                     gameForm.EnableInputs();
                     SendMessage(MessageIdentifiers.GameUpdate);
-
                 }
                 else
                 {
@@ -294,6 +295,11 @@ namespace ClientApplication
             {
                 ReceiveResponse(); //5. AND RECEIVING REQUESTS
             }
+        }
+
+        public int GetPlayerId()
+        {
+            return currentGame.GetPlayerID();
         }
 
         //Used to combine an identifier byte with a "message" byte[]
