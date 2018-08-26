@@ -44,7 +44,7 @@ namespace ClientApplication {
             }
         }
 
-        private Button CreatePiece() {
+        private Button CreatePiece(Point pos) {
             Button piece = new Button();
             piece.TabStop = false;
             piece.FlatStyle = FlatStyle.Flat;
@@ -52,6 +52,7 @@ namespace ClientApplication {
             piece.Width = 64;
             piece.Height = 64;
             piece.Image = Properties.Resources.Red_Piece;
+            piece.Location = pos;
             return piece;
         }
 
@@ -117,9 +118,9 @@ namespace ClientApplication {
             for (int i = 0; i < 8; i++) {
                 for (int j = 0; j < 8; j++) {
                     if (gameBoard[i,j] == CheckerPieces.Red) {
-                        activePieces.Add(CreatePiece());
+                        activePieces.Add(CreatePiece(boardPositions[i,j]));
                     } else if (gameBoard[i, j] == CheckerPieces.Black) {
-                        activePieces.Add(CreatePiece());
+                        activePieces.Add(CreatePiece(boardPositions[i, j]));
                     }
                 }
             }
