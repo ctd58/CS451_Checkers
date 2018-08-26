@@ -270,6 +270,11 @@ namespace ClientApplication
             }
         }
 
+        public int GetPlayerId()
+        {
+            return currentGame.GetPlayerID();
+        }
+
         //Used to combine an identifier byte with a "message" byte[]
         public static byte[] Combine(byte[] first, byte[] second)
         {

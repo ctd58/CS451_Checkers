@@ -144,7 +144,8 @@ namespace ClientApplication {
             CheckerPieces[,] gameBoard = game.GetGameBoard();
             for (int i = 0; i < 8; i++) {
                 for (int j = 0; j < 8; j++) {
-                    activePieces.Add(CreatePiece(boardPositions[i, j], new CKPoint(i, j), gameBoard[i, j]));
+                    if(gameBoard[i,j] != CheckerPieces.blank)
+                        activePieces.Add(CreatePiece(boardPositions[i, j], new CKPoint(i, j), gameBoard[i, j]));
                 }
             }
         }
@@ -177,11 +178,13 @@ namespace ClientApplication {
         {
             UpdateBoard(new GameBoard());
         }
-
-
-
+        
         protected void Redbutton_Click(object sender, EventArgs e)
         {
+            if (client.GetPlayerId() == 2)
+            {
+                return;
+            }
             Button button = sender as Button;
             CKPoint point = (CKPoint)button.Tag;
             System.Diagnostics.Debug.WriteLine("Point: " + point.GetRow() + "," + point.GetColumn());
@@ -189,6 +192,10 @@ namespace ClientApplication {
         }
         protected void RedKingbutton_Click(object sender, EventArgs e)
         {
+            if (client.GetPlayerId() == 2)
+            {
+                return;
+            }
             Button button = sender as Button;
             CKPoint point = (CKPoint)button.Tag;
             System.Diagnostics.Debug.WriteLine("Point: " + point.GetRow() + "," + point.GetColumn());
@@ -196,6 +203,10 @@ namespace ClientApplication {
         }
         protected void Blackbutton_Click(object sender, EventArgs e)
         {
+            if (client.GetPlayerId() == 1)
+            {
+                return;
+            }
             Button button = sender as Button;
             CKPoint point = (CKPoint)button.Tag;
             System.Diagnostics.Debug.WriteLine("Point: " + point.GetRow() + "," + point.GetColumn());
@@ -203,6 +214,10 @@ namespace ClientApplication {
         }
         protected void BlackKingbutton_Click(object sender, EventArgs e)
         {
+            if (client.GetPlayerId() == 1)
+            {
+                return;
+            }
             Button button = sender as Button;
             CKPoint point = (CKPoint)button.Tag;
             System.Diagnostics.Debug.WriteLine("Point: " + point.GetRow() + "," + point.GetColumn());

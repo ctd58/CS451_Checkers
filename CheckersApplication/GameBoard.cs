@@ -6,7 +6,7 @@ using System.Collections.Generic;
 public enum MessageIdentifiers { ReadyUpdate, OnePlayerConnected, TwoPlayersConnected, StartingGame,
     WaitingForOpponent, GameUpdate, RetryGameUpdate, GameOver, PauseRequest, PauseGame };
 public enum GameStatus { InProgress, Player1Wins, Player2Wins, Draw };
-public enum CheckerPieces { Unavailable, Empty, Red, RedKing, Black, BlackKing };
+public enum CheckerPieces { blank, Empty, Red, RedKing, Black, BlackKing };
 
 [Serializable]
 public class GameBoard
@@ -101,7 +101,16 @@ public class GameBoard
                         gameBoard[i, j] = CheckerPieces.Empty;
                     }
                 }
+                if(i % 2 == 0 && j % 2 == 0)
+                {
+                    gameBoard[i, j] = CheckerPieces.blank;
+                }
+                if(i % 2 != 0 && j % 2 != 0)
+                {
+                    gameBoard[i, j] = CheckerPieces.blank;
+                }
             }
+
         }
     }
 
