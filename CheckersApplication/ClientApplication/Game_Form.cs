@@ -99,10 +99,6 @@ namespace ClientApplication {
             this.Close();
         }
 
-        public TextBox GetOutputBox() {
-            return tbConsole;
-        }
-
         public TextBox GetTurnBox() {
             return tbTurn;
         }
@@ -130,24 +126,12 @@ namespace ClientApplication {
             playerMove.RestartMove();
         }
 
-
-        public void SetOutputBox(string text)
+        public void RestartMove()
         {
-            // InvokeRequired required compares the thread ID of the
-            // calling thread to the thread ID of the creating thread.
-            // If these threads are different, it returns true.
-            if (this.tbConsole.InvokeRequired)
-            {
-                StringArgReturningVoidDelegate d = new StringArgReturningVoidDelegate(SetOutputBox);
-                this.Invoke(d, new object[] { text });
-            }
-            else
-            {
-                if (text == "")
-                    this.tbConsole.Text = "";
-                else
-                    this.tbConsole.Text += text + "\r\n";
-            }
+            this.BeginInvoke((Action)delegate () {
+                playerMove.RestartMove();
+                UpdateBoard(client.GetBoard());
+            });
         }
 
         public void SetTurnBox(string text)
@@ -155,7 +139,7 @@ namespace ClientApplication {
             // InvokeRequired required compares the thread ID of the
             // calling thread to the thread ID of the creating thread.
             // If these threads are different, it returns true.
-            if (this.tbConsole.InvokeRequired)
+            if (this.tbTurn.InvokeRequired)
             {
                 StringArgReturningVoidDelegate d = new StringArgReturningVoidDelegate(SetTurnBox);
                 this.Invoke(d, new object[] { text });
@@ -306,8 +290,7 @@ namespace ClientApplication {
         }
 
         private void Reset_Move_Button_Click(object sender, EventArgs e) {
-            playerMove.RestartMove();
-            UpdateBoard(client.GetBoard());
+            RestartMove();
         }
     }
 }

@@ -24,7 +24,6 @@
         /// </summary>
         private void InitializeComponent() {
             this.Exit = new System.Windows.Forms.Label();
-            this.tbConsole = new System.Windows.Forms.TextBox();
             this.tbTurn = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
             this.Board = new System.Windows.Forms.PictureBox();
@@ -44,29 +43,19 @@
             this.Exit.Text = "x";
             this.Exit.Click += new System.EventHandler(this.Exit_Click);
             // 
-            // tbConsole
-            // 
-            this.tbConsole.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(27)))), ((int)(((byte)(28)))), ((int)(((byte)(33)))));
-            this.tbConsole.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(250)))));
-            this.tbConsole.Location = new System.Drawing.Point(12, 607);
-            this.tbConsole.Multiline = true;
-            this.tbConsole.Name = "tbConsole";
-            this.tbConsole.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.tbConsole.Size = new System.Drawing.Size(921, 202);
-            this.tbConsole.TabIndex = 4;
-            // 
             // tbTurn
             // 
             this.tbTurn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(27)))), ((int)(((byte)(28)))), ((int)(((byte)(33)))));
             this.tbTurn.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.tbTurn.Font = new System.Drawing.Font("Impact", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tbTurn.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(250)))));
-            this.tbTurn.Location = new System.Drawing.Point(71, 33);
+            this.tbTurn.Location = new System.Drawing.Point(34, 38);
             this.tbTurn.Name = "tbTurn";
             this.tbTurn.ReadOnly = true;
-            this.tbTurn.Size = new System.Drawing.Size(160, 33);
+            this.tbTurn.Size = new System.Drawing.Size(217, 33);
             this.tbTurn.TabIndex = 6;
             this.tbTurn.Text = "Waiting...";
+            this.tbTurn.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // button1
             // 
@@ -114,7 +103,6 @@
             this.Controls.Add(this.Reset_Move_Button);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.tbTurn);
-            this.Controls.Add(this.tbConsole);
             this.Controls.Add(this.Exit);
             this.Controls.Add(this.Board);
             this.Name = "Game_Form";
@@ -129,7 +117,6 @@
         #endregion
 
         private System.Windows.Forms.Label Exit;
-        private System.Windows.Forms.TextBox tbConsole;
         private System.Windows.Forms.TextBox tbTurn;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.PictureBox Board;

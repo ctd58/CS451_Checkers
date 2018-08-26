@@ -39,9 +39,9 @@ namespace ClientApplication
         public Client(Game_Form game) {
             currentGame = new ClientCheckersGame(game);
             gameForm = game;
-            output = game.GetOutputBox();
+            //output = game.GetOutputBox();
             turnText = game.GetTurnBox();
-            gameForm.SetOutputBox("Client Succesfully Created...");
+            //gameForm.SetOutputBox("Client Succesfully Created...");
         }
 
         public GameBoard GetBoard() {
@@ -57,9 +57,9 @@ namespace ClientApplication
                 try
                 {
                     attempts++;
-                    gameForm.SetOutputBox("Connection attempt: " + attempts);
+                    //gameForm.SetOutputBox("Connection attempt: " + attempts);
                     // Change IPAddress.Loopback to a remote IP to connect to a remote host.
-                    gameForm.SetOutputBox("Enter IP Address");
+                    //gameForm.SetOutputBox("Enter IP Address");
                     //ipAddress = output.ReadLine();
                     ipAddress = "192.168.1.6";
                     //Would put a User input here to get IP address
@@ -81,12 +81,12 @@ namespace ClientApplication
                 }
                 catch (SocketException)
                 {
-                    gameForm.SetOutputBox("");
+                    //gameForm.SetOutputBox("");
                 }
             }
 
-            gameForm.SetOutputBox("");
-            gameForm.SetOutputBox("Connected");
+            //gameForm.SetOutputBox("");
+            //gameForm.SetOutputBox("Connected");
             //RequestLoop();
             ReceiveResponse();
         }
@@ -117,7 +117,7 @@ namespace ClientApplication
             var buffer = new byte[2048];
             SendMessage(MessageIdentifiers.ReadyUpdate); //4. KEEP SENDING REQUESTS
                                                          //int receivedReady = ClientSocket.Receive(buffer, SocketFlags.None);
-            gameForm.SetOutputBox("Receiving");
+            //gameForm.SetOutputBox("Receiving");
             int received = ClientSocket.Receive(buffer, SocketFlags.None);
             if (received == 0) return;
             var data = new byte[received];
@@ -143,7 +143,7 @@ namespace ClientApplication
             if (identifier == MessageIdentifiers.OnePlayerConnected.ToString("d"))
             {
                 string text = Encoding.ASCII.GetString(messageBytes);
-                gameForm.SetOutputBox(text);
+                //gameForm.SetOutputBox(text);
             }
             else if (identifier == MessageIdentifiers.TwoPlayersConnected.ToString("d"))
             {
@@ -156,9 +156,9 @@ namespace ClientApplication
                     deserializedClass = (Sclass1)formatter.Deserialize(stream);
                 }
 
-                gameForm.SetOutputBox(deserializedClass.GetMessage());
+                //gameForm.SetOutputBox(deserializedClass.GetMessage());
                 currentGame.SetPlayerID(deserializedClass.GetPlayer());
-                gameForm.SetOutputBox(currentGame.GetPlayerID().ToString());
+                //gameForm.SetOutputBox(currentGame.GetPlayerID().ToString());
             }
             else if (identifier == MessageIdentifiers.GameUpdate.ToString("d"))
             {
@@ -172,9 +172,10 @@ namespace ClientApplication
                 }
                 if (currentGame.IsMyTurn())
                 {
-                    gameForm.SetOutputBox("Is my turn");
+                    //gameForm.SetOutputBox("Is my turn");
                     gameForm.SetTurnBox("");
                     gameForm.SetTurnBox("Your Turn");
+
                     //Get and Send PlayerMove
                     gameForm.EnableInputs();
                     SendMessage(MessageIdentifiers.GameUpdate);
@@ -182,22 +183,41 @@ namespace ClientApplication
                 else
                 {
                     gameForm.DisableInputs();
-                    gameForm.SetOutputBox("Is not my turn");
+                    //gameForm.SetOutputBox("Is not my turn");
                     gameForm.SetTurnBox("");
                     gameForm.SetTurnBox("Not Your Turn");
-                    gameForm.SetOutputBox("Not Your Turn");
+                    //gameForm.SetOutputBox("Not Your Turn");
                 }
             }
             else if (identifier == MessageIdentifiers.RetryGameUpdate.ToString("d"))
             {
-                gameForm.SetOutputBox("Invalid Move, Try Again");
+                //gameForm.SetOutputBox("Invalid Move, Try Again");
+                gameForm.SetTurnBox("");
+                gameForm.SetTurnBox("Retry Move");
+                gameForm.RestartMove();
                 //do stuff to update the gameboard and try again
                 SendMessage(MessageIdentifiers.GameUpdate);
             }
             else if(identifier == MessageIdentifiers.GameOver.ToString("d"))
             {
-                string text = Encoding.ASCII.GetString(messageBytes);
-                gameForm.SetOutputBox(text);
+                IFormatter formatter = new BinaryFormatter();
+                using (MemoryStream stream = new MemoryStream(messageBytes))
+                {
+                    formatter.Binder = new PreMergeToMergedDeserializationBinder();
+                    GameBoard temp = (GameBoard)formatter.Deserialize(stream);
+                    currentGame.UpdateBoard(temp);
+                    gameForm.UpdateBoard(temp);
+                }
+                GameStatus status = currentGame.GetGameStatus();
+                gameForm.SetTurnBox("");
+                
+                if (GameStatus.Player1Wins == status)
+                    gameForm.SetTurnBox("Player 1 Wins !!!");
+                else if (GameStatus.Player2Wins == status)
+                    gameForm.SetTurnBox("Player 2 Wins !!!");
+                else if (GameStatus.Draw == status)
+                    gameForm.SetTurnBox("It's A Draw !!!");
+                //gameForm.SetOutputBox(text);
                 //switch forms and close sockets;
                 return;
             }
@@ -238,7 +258,7 @@ namespace ClientApplication
 
                     ClientSocket.Send(data);
 
-                    gameForm.SetOutputBox("Sent Game Update");
+                    //gameForm.SetOutputBox("Sent Game Update");
 
                     //ReceiveResponse();
                     break;
@@ -249,7 +269,7 @@ namespace ClientApplication
 
         private void RequestLoop()
         {
-            gameForm.SetOutputBox(@"<Type ""exit"" to properly disconnect client>");
+            //gameForm.SetOutputBox(@"<Type ""exit"" to properly disconnect client>");
 
             while (true)
             {

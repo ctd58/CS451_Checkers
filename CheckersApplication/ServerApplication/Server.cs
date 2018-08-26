@@ -269,20 +269,20 @@ namespace ServerApplication {
                     break;
                 case MessageIdentifiers.GameOver:
                     //Set the game over message
-                    GameStatus status = currentGame.GetGameStatus();
-                    appended = Encoding.ASCII.GetBytes("");
-                    if (GameStatus.Player1Wins == status)
-                        appended = Encoding.ASCII.GetBytes("Player 1 Wins !!!");
-                    else if (GameStatus.Player2Wins == status)
-                        appended = Encoding.ASCII.GetBytes("Player 2 Wins !!!");
-                    else if (GameStatus.Draw == status)
-                        appended = Encoding.ASCII.GetBytes("It's a Draw !!!");
+                    serializeGameBoard = currentGame.GetGameBoard();
+                    formatter = new BinaryFormatter();
+                    using (MemoryStream stream = new MemoryStream())
+                    {
+                        formatter.Serialize(stream, serializeGameBoard);
+                        appended = stream.ToArray();
+                    }
 
                     identifier = Encoding.ASCII.GetBytes(MessageIdentifiers.GameOver.ToString("d"));
-                    data = Combine(identifier, appended);
-                    player1Socket.Send(data);
+                    GameBoardData = Combine(identifier, appended);
+
+                    player1Socket.Send(GameBoardData);
                     Client1Ready = false;
-                    player2Socket.Send(data);
+                    player2Socket.Send(GameBoardData);
                     Client2Ready = false;
                     //do stuff to shut down server
                     break;

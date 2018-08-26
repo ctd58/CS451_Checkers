@@ -63,7 +63,7 @@ namespace ClientApplication {
         }
 
         public GameStatus GetGameStatus() {
-            return gameBoard.GetGameStatus();
+            return gameBoard.CheckForWin();
         }
 
         public GameBoard GetGameBoard() {
