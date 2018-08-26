@@ -26,10 +26,10 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Game_Form));
             this.Exit = new System.Windows.Forms.Label();
             this.tbConsole = new System.Windows.Forms.TextBox();
-            this.Board = new System.Windows.Forms.PictureBox();
             this.tbTurn = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
+            this.Board = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.Board)).BeginInit();
             this.SuspendLayout();
             // 
@@ -55,15 +55,6 @@
             this.tbConsole.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.tbConsole.Size = new System.Drawing.Size(921, 202);
             this.tbConsole.TabIndex = 4;
-            // 
-            // Board
-            // 
-            this.Board.Image = ((System.Drawing.Image)(resources.GetObject("Board.Image")));
-            this.Board.Location = new System.Drawing.Point(318, 20);
-            this.Board.Name = "Board";
-            this.Board.Size = new System.Drawing.Size(579, 587);
-            this.Board.TabIndex = 5;
-            this.Board.TabStop = false;
             // 
             // tbTurn
             // 
@@ -98,6 +89,16 @@
             this.button2.TabIndex = 8;
             this.button2.Text = "button2";
             this.button2.UseVisualStyleBackColor = false;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
+            // Board
+            // 
+            this.Board.Image = ((System.Drawing.Image)(resources.GetObject("Board.Image")));
+            this.Board.Location = new System.Drawing.Point(318, 20);
+            this.Board.Name = "Board";
+            this.Board.Size = new System.Drawing.Size(579, 587);
+            this.Board.TabIndex = 5;
+            this.Board.TabStop = false;
             // 
             // Game_Form
             // 
@@ -108,9 +109,9 @@
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.tbTurn);
-            this.Controls.Add(this.Board);
             this.Controls.Add(this.tbConsole);
             this.Controls.Add(this.Exit);
+            this.Controls.Add(this.Board);
             this.Name = "Game_Form";
             this.Text = "Game_Form";
             this.Shown += new System.EventHandler(this.Game_Form_Shown);
@@ -124,9 +125,9 @@
 
         private System.Windows.Forms.Label Exit;
         private System.Windows.Forms.TextBox tbConsole;
-        private System.Windows.Forms.PictureBox Board;
         private System.Windows.Forms.TextBox tbTurn;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.PictureBox Board;
     }
 }

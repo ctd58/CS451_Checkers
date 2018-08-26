@@ -53,6 +53,7 @@ namespace ClientApplication {
             piece.Height = 64;
             piece.Image = Properties.Resources.Red_Piece;
             piece.Location = pos;
+            this.BeginInvoke((Action)delegate () { this.Controls.Add(piece); piece.BringToFront(); });
             return piece;
         }
 
@@ -149,6 +150,11 @@ namespace ClientApplication {
         {
             test = true;
             //client.ReceiveResponse();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            UpdateBoard(new GameBoard());
         }
     }
 }
