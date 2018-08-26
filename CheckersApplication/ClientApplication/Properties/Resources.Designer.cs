@@ -83,6 +83,16 @@ namespace ClientApplication.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Checker_Board {
+            get {
+                object obj = ResourceManager.GetObject("Checker_Board", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Red_Piece {
             get {
                 object obj = ResourceManager.GetObject("Red_Piece", resourceCulture);

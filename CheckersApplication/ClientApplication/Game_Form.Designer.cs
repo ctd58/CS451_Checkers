@@ -23,7 +23,6 @@
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Game_Form));
             this.Exit = new System.Windows.Forms.Label();
             this.tbConsole = new System.Windows.Forms.TextBox();
             this.tbTurn = new System.Windows.Forms.TextBox();
@@ -82,7 +81,7 @@
             // 
             // Board
             // 
-            this.Board.Image = ((System.Drawing.Image)(resources.GetObject("Board.Image")));
+            this.Board.Image = global::ClientApplication.Properties.Resources.Checker_Board;
             this.Board.Location = new System.Drawing.Point(318, 20);
             this.Board.Name = "Board";
             this.Board.Size = new System.Drawing.Size(579, 587);
