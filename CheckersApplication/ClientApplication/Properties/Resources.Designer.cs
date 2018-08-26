@@ -63,9 +63,39 @@ namespace ClientApplication.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Black_Piece {
+            get {
+                object obj = ResourceManager.GetObject("Black_Piece", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Black_Piece_King {
+            get {
+                object obj = ResourceManager.GetObject("Black_Piece_King", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Red_Piece {
             get {
                 object obj = ResourceManager.GetObject("Red_Piece", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Red_Piece_King {
+            get {
+                object obj = ResourceManager.GetObject("Red_Piece_King", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
