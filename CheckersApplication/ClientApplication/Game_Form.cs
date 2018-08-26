@@ -21,7 +21,7 @@ namespace ClientApplication {
         Task clientTask;
         public bool test = false;
 
-        private List<Button> activePieces;
+        private List<Button> activePieces = new List<Button>();
         private Point[,] boardPositions = new Point[8, 8];
 
         public Game_Form(bool host) {
@@ -113,7 +113,8 @@ namespace ClientApplication {
         }
 
         public void UpdateBoard(GameBoard game) {
-            activePieces.Clear();
+            if(activePieces != null)
+                activePieces.Clear();
             CheckerPieces[,] gameBoard = game.GetGameBoard();
             for (int i = 0; i < 8; i++) {
                 for (int j = 0; j < 8; j++) {

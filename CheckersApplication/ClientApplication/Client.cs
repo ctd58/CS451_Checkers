@@ -162,8 +162,9 @@ namespace ClientApplication
                 using (MemoryStream stream = new MemoryStream(messageBytes))
                 {
                     formatter.Binder = new PreMergeToMergedDeserializationBinder();
-                    currentGame.UpdateBoard((GameBoard)formatter.Deserialize(stream));
-                    gameForm.UpdateBoard((GameBoard)formatter.Deserialize(stream));
+                    GameBoard temp = (GameBoard)formatter.Deserialize(stream);
+                    currentGame.UpdateBoard(temp);
+                    gameForm.UpdateBoard(temp);
                 }
                 if (currentGame.IsMyTurn())
                 {
