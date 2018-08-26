@@ -47,7 +47,9 @@ public class PlayerMove
 
     public void RestartMove() {
         move.Clear();
+    }
 
+    public void SwitchPlayer() {
         player = (player == 1) ? 2 : 1;
     }
     #endregion

@@ -44,6 +44,10 @@ namespace ClientApplication
             gameForm.SetOutputBox("Client Succesfully Created...");
         }
 
+        public GameBoard GetBoard() {
+            return currentGame.GetGameBoard();
+        }
+
         public void ConnectToServer()
         {
             int attempts = 0;

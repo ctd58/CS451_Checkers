@@ -213,6 +213,11 @@ namespace ClientApplication {
                 CKPoint point = (CKPoint)button.Tag;
                 playerMove.BuildMove(point);
                 System.Diagnostics.Debug.WriteLine("Point: " + point.GetRow() + "," + point.GetColumn());
+
+                // Color boarder
+                Button piece = (Button)sender;
+                piece.FlatAppearance.BorderSize = 1;
+                piece.FlatAppearance.BorderColor = Color.White;
             }
             // identify which button was clicked and perform necessary actions
         }
@@ -227,6 +232,11 @@ namespace ClientApplication {
                 CKPoint point = (CKPoint)button.Tag;
                 playerMove.BuildMove(point);
                 System.Diagnostics.Debug.WriteLine("Point: " + point.GetRow() + "," + point.GetColumn());
+
+                // Color boarder
+                Button piece = (Button)sender;
+                piece.FlatAppearance.BorderSize = 1;
+                piece.FlatAppearance.BorderColor = Color.White;
             }
             // identify which button was clicked and perform necessary actions
         }
@@ -241,6 +251,11 @@ namespace ClientApplication {
                 CKPoint point = (CKPoint)button.Tag;
                 playerMove.BuildMove(point);
                 System.Diagnostics.Debug.WriteLine("Point: " + point.GetRow() + "," + point.GetColumn());
+
+                // Color boarder
+                Button piece = (Button)sender;
+                piece.FlatAppearance.BorderSize = 1;
+                piece.FlatAppearance.BorderColor = Color.White;
             }
             // identify which button was clicked and perform necessary actions
         }
@@ -255,6 +270,11 @@ namespace ClientApplication {
                 CKPoint point = (CKPoint)button.Tag;
                 playerMove.BuildMove(point);
                 System.Diagnostics.Debug.WriteLine("Point: " + point.GetRow() + "," + point.GetColumn());
+
+                // Color boarder
+                Button piece = (Button)sender;
+                piece.FlatAppearance.BorderSize = 1;
+                piece.FlatAppearance.BorderColor = Color.White;
             }
             // identify which button was clicked and perform necessary actions
         }
@@ -265,12 +285,18 @@ namespace ClientApplication {
                 CKPoint point = (CKPoint)button.Tag;
                 playerMove.BuildMove(point);
                 System.Diagnostics.Debug.WriteLine("Point: " + point.GetRow() + "," + point.GetColumn());
+
+                // Color boarder
+                Button piece = (Button)sender;
+                piece.FlatAppearance.BorderSize = 1;
+                piece.FlatAppearance.BorderColor = Color.White;
             }
             // identify which button was clicked and perform necessary actions
         }
 
         private void Reset_Move_Button_Click(object sender, EventArgs e) {
             playerMove.RestartMove();
+            UpdateBoard(client.GetBoard());
         }
     }
 }
