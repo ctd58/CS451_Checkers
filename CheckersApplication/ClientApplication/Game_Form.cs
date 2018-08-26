@@ -25,42 +25,30 @@ namespace ClientApplication {
         private void Exit_Click(object sender, EventArgs e) {
             this.Close();
         }
-/*
-        [DllImport("kernel32")]
-        static extern int AllocConsole();
-        void RunServer() {
-            // Open server console
-            AllocConsole();
-            Console.Title = "Server";
-            Server server = new Server();  // 2. GO TO SETUPSERVER
-            Console.ReadLine(); // When we press enter close everything
-            server.CloseAllSockets();
-        }
-*/
 
-        void RunServer() {
+        public TextBox GetOutputBox() {
+            return tbConsole;
+        }
+
+        public TextBox GetTurnBox() {
+            return tbTurn;
+        }
+
+        private void RunServer() {
             Process.Start(Application.StartupPath.ToString() + @"\ServerApplication.exe");
         }
 
-        [DllImport("kernel32")]
-        static extern IntPtr AllocConsole();
-        void RunClient() {
-            // Open client console
-            AllocConsole();
-            Console.Title = "Client";
-            TextWriter writer = new TextBoxConsole(tbConsole);
-            Console.SetOut(writer);
-            Client client = new Client();
+        private void RunClient() {
+            Client client = new Client(this);
             client.ConnectToServer(); //2. START TRYING TO CONNECT TO SERVER
         }
 
         private void Game_Form_Shown(object sender, EventArgs e) {
             if (host) {
-                RunServer();
-                Thread.Sleep(500);
-                RunClient();
+                Task serverTask = Task.Factory.StartNew(() => RunServer());
+                Task clientTask = Task.Factory.StartNew(() => RunClient());
             } else {
-                RunClient();
+                Task clientTask = Task.Factory.StartNew(() => RunClient());
             }
         }
     }

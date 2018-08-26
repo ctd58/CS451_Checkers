@@ -26,12 +26,12 @@
         private void InitializeComponent() {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Main_Menu_Form));
             this.Menu_Panel = new System.Windows.Forms.Panel();
+            this.Join_Button = new System.Windows.Forms.Button();
             this.Host_Button = new System.Windows.Forms.Button();
             this.Menu_Title = new System.Windows.Forms.Label();
             this.Menu_Icon = new System.Windows.Forms.PictureBox();
             this.Exit = new System.Windows.Forms.Label();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
-            this.Join_Button = new System.Windows.Forms.Button();
             this.Menu_Panel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Menu_Icon)).BeginInit();
             this.SuspendLayout();
@@ -48,6 +48,19 @@
             this.Menu_Panel.Name = "Menu_Panel";
             this.Menu_Panel.Size = new System.Drawing.Size(784, 821);
             this.Menu_Panel.TabIndex = 0;
+            // 
+            // Join_Button
+            // 
+            this.Join_Button.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(27)))), ((int)(((byte)(28)))), ((int)(((byte)(33)))));
+            this.Join_Button.Font = new System.Drawing.Font("Impact", 27.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Join_Button.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(250)))));
+            this.Join_Button.Location = new System.Drawing.Point(300, 427);
+            this.Join_Button.Name = "Join_Button";
+            this.Join_Button.Size = new System.Drawing.Size(180, 64);
+            this.Join_Button.TabIndex = 3;
+            this.Join_Button.Text = "Join";
+            this.Join_Button.UseVisualStyleBackColor = false;
+            this.Join_Button.Click += new System.EventHandler(this.Join_Button_Click);
             // 
             // Host_Button
             // 
@@ -94,19 +107,6 @@
             this.Exit.TabIndex = 2;
             this.Exit.Text = "x";
             this.Exit.Click += new System.EventHandler(this.Exit_Click);
-            // 
-            // Join_Button
-            // 
-            this.Join_Button.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(27)))), ((int)(((byte)(28)))), ((int)(((byte)(33)))));
-            this.Join_Button.Font = new System.Drawing.Font("Impact", 27.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Join_Button.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(250)))));
-            this.Join_Button.Location = new System.Drawing.Point(300, 427);
-            this.Join_Button.Name = "Join_Button";
-            this.Join_Button.Size = new System.Drawing.Size(180, 64);
-            this.Join_Button.TabIndex = 3;
-            this.Join_Button.Text = "Join";
-            this.Join_Button.UseVisualStyleBackColor = false;
-            this.Join_Button.Click += new System.EventHandler(this.Join_Button_Click);
             // 
             // Main_Menu_Form
             // 

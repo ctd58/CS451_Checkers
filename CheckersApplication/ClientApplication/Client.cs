@@ -12,12 +12,14 @@ using System.Runtime.Serialization;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Reflection;
+using System.Windows.Forms;
+using ExtensionMethods;
 
 namespace ClientApplication
 {
-    public class Client
+     public class Client
     {
-        private static readonly Socket ClientSocket = new Socket
+         private static readonly Socket ClientSocket = new Socket
 (AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
         private const int PORT = 100;
@@ -29,9 +31,15 @@ namespace ClientApplication
 
         //private ClientCheckersGame currentGame;
 
-        public Client() {
+        // Game Form Elements
+        private TextBox output;
+        private TextBox turnText;
+
+        public Client(Game_Form game) {
             currentGame = new ClientCheckersGame();
-            Console.WriteLine("Client Succesfully Created...");
+            output = game.GetOutputBox();
+            turnText = game.GetTurnBox();
+            this.output.WriteLine("Client Succesfully Created...");
         }
 
         public void ConnectToServer()
@@ -43,14 +51,14 @@ namespace ClientApplication
                 try
                 {
                     attempts++;
-                    Console.WriteLine("Connection attempt: " + attempts);
+                    output.WriteLine("Connection attempt: " + attempts);
                     // Change IPAddress.Loopback to a remote IP to connect to a remote host.
-                    Console.WriteLine("Enter IP Address");
-                    //ipAddress = Console.ReadLine();
+                    output.WriteLine("Enter IP Address");
+                    //ipAddress = output.ReadLine();
                     ipAddress = "192.168.1.6";
                     //Would put a User input here to get IP address
                     //IPAddress ServerIP = IPAddress.Parse(ipAddress);
-                    //Console.WriteLine(ServerIP);
+                    //output.WriteLine(ServerIP);
                     IPAddress ServerIP = null;
                     IPHostEntry host;
                     host = Dns.GetHostEntry(Dns.GetHostName());
@@ -67,12 +75,12 @@ namespace ClientApplication
                 }
                 catch (SocketException)
                 {
-                    Console.Clear();
+                    output.Clear();
                 }
             }
 
-            Console.Clear();
-            Console.WriteLine("Connected");
+            output.Clear();
+            output.WriteLine("Connected");
             //RequestLoop();
             ReceiveResponse();
         }
@@ -103,13 +111,13 @@ namespace ClientApplication
             var buffer = new byte[2048];
             SendMessage(MessageIdentifiers.ReadyUpdate); //4. KEEP SENDING REQUESTS
                            //int receivedReady = ClientSocket.Receive(buffer, SocketFlags.None);
-            Console.Write("Receiving \n");
+            output.WriteLine("Receiving");
             int received = ClientSocket.Receive(buffer, SocketFlags.None);
             if (received == 0) return;
             var data = new byte[received];
             Array.Copy(buffer, data, received);
             //string text = Encoding.ASCII.GetString(data);
-            //Console.WriteLine(text);
+            //output.WriteLine(text);
 
             InterpretMessage(data);
         }
@@ -120,7 +128,7 @@ namespace ClientApplication
             byte[] firstByte = new byte[1];
             Array.Copy(message, 0, firstByte, 0, firstByte.Length);
             string identifier = Encoding.ASCII.GetString(firstByte);
-            //Console.WriteLine(identifier);
+            //output.WriteLine(identifier);
 
             //put the rest of the bytes in messageBytes
             byte[] messageBytes = new byte[message.Length - 1];
@@ -129,7 +137,7 @@ namespace ClientApplication
             if (identifier == MessageIdentifiers.OnePlayerConnected.ToString("d"))
             {
                 string text = Encoding.ASCII.GetString(messageBytes);
-                Console.WriteLine(text);
+                output.WriteLine(text);
             }
             else if (identifier == MessageIdentifiers.TwoPlayersConnected.ToString("d"))
             {
@@ -142,9 +150,9 @@ namespace ClientApplication
                     deserializedClass = (Sclass1)formatter.Deserialize(stream);
                 }
 
-                Console.WriteLine(deserializedClass.GetMessage());
+                output.WriteLine(deserializedClass.GetMessage());
                 currentGame.SetPlayerID(deserializedClass.GetPlayer());
-                Console.WriteLine(currentGame.GetPlayerID());
+                output.WriteLine(currentGame.GetPlayerID().ToString());
             }
             else if (identifier == MessageIdentifiers.GameUpdate.ToString("d"))
             {
@@ -156,25 +164,29 @@ namespace ClientApplication
                 }
                 if (currentGame.IsMyTurn())
                 {
-                    Console.WriteLine("Is my turn");
+                    output.WriteLine("Is my turn");
+                    turnText.Clear();
+                    turnText.WriteLine("Your Turn");
                     //Get and Send PlayerMove
                     SendMessage(MessageIdentifiers.GameUpdate);
                 }
                 else
                 {
-                    Console.WriteLine("Is not my turn");
+                    output.WriteLine("Is not my turn");
+                    turnText.Clear();
+                    turnText.WriteLine("Not Your Turn");
                 }
             }
             else if (identifier == MessageIdentifiers.RetryGameUpdate.ToString("d"))
             {
-                Console.WriteLine("Invalid Move, Try Again");
+                output.WriteLine("Invalid Move, Try Again");
                 //do stuff to update the gameboard and try again
                 SendMessage(MessageIdentifiers.GameUpdate);
             }
             else if(identifier == MessageIdentifiers.GameOver.ToString("d"))
             {
                 string text = Encoding.ASCII.GetString(messageBytes);
-                Console.WriteLine(text);
+                output.WriteLine(text);
                 //switch forms and close sockets;
                 return;
             }
@@ -232,7 +244,7 @@ namespace ClientApplication
 
                     ClientSocket.Send(data);
 
-                    Console.WriteLine("Sent Game Update");
+                    output.WriteLine("Sent Game Update");
 
                     ReceiveResponse();
                     break;
@@ -243,7 +255,7 @@ namespace ClientApplication
 
         private void RequestLoop()
         {
-            Console.WriteLine(@"<Type ""exit"" to properly disconnect client>");
+            output.WriteLine(@"<Type ""exit"" to properly disconnect client>");
 
             while (true)
             {
