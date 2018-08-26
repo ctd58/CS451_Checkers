@@ -58,7 +58,7 @@
             // Board
             // 
             this.Board.Image = ((System.Drawing.Image)(resources.GetObject("Board.Image")));
-            this.Board.Location = new System.Drawing.Point(332, 20);
+            this.Board.Location = new System.Drawing.Point(318, 20);
             this.Board.Name = "Board";
             this.Board.Size = new System.Drawing.Size(579, 587);
             this.Board.TabIndex = 5;
@@ -71,6 +71,7 @@
             this.tbTurn.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(250)))));
             this.tbTurn.Location = new System.Drawing.Point(71, 33);
             this.tbTurn.Name = "tbTurn";
+            this.tbTurn.ReadOnly = true;
             this.tbTurn.Size = new System.Drawing.Size(160, 40);
             this.tbTurn.TabIndex = 6;
             this.tbTurn.Text = "Not Your Turn";
