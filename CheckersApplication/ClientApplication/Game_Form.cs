@@ -19,7 +19,7 @@ namespace ClientApplication {
         delegate void StringArgReturningVoidDelegate(string text);
         Client client;
         Task clientTask;
-        public bool test = false;
+        public bool waitingToSubmit = false;
 
         private List<Button> activePieces = new List<Button>();
         private Point[,] boardPositions = new Point[8, 8];
@@ -106,7 +106,13 @@ namespace ClientApplication {
 
         public void SetSubmitMove(bool value)
         {
-            test = value;
+            waitingToSubmit = value;
+        }
+
+        public PlayerMove SubmitPlayerMove()
+        {
+            waitingToSubmit = false;
+            return new PlayerMove();
         }
 
         public void DisableInputs()
@@ -190,7 +196,7 @@ namespace ClientApplication {
 
         private void button1_Click(object sender, EventArgs e)
         {
-            test = true;
+            waitingToSubmit = true;
             //client.ReceiveResponse();
         }
 

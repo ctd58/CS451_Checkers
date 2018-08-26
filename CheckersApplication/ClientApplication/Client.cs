@@ -140,12 +140,9 @@ namespace ClientApplication
             {
                 string text = Encoding.ASCII.GetString(messageBytes);
                 gameForm.SetOutputBox(text);
-                temp = 0;
             }
             else if (identifier == MessageIdentifiers.TwoPlayersConnected.ToString("d"))
             {
-                if (temp == -1)
-                    temp = 1;
                 Sclass1 deserializedClass;
 
                 IFormatter formatter = new BinaryFormatter();
@@ -203,8 +200,6 @@ namespace ClientApplication
             ReceiveResponse();
         }
 
-        private int temp = -1;
-
         public void SendMessage(MessageIdentifiers id)
         {
             byte[] appended;
@@ -221,47 +216,8 @@ namespace ClientApplication
                     break;
                 case MessageIdentifiers.GameUpdate:
           
-                    while (gameForm.test == false) { }
-                    gameForm.SetSubmitMove(false);
-                    PlayerMove pm = new PlayerMove();
-                    CKPoint ck1;
-                    CKPoint ck2;
-                    switch (temp)
-                    {
-                        case 0:
-                            ck1 = new CKPoint(2, 1);
-                            ck2 = new CKPoint(3, 2);
-                            break;
-                        case 1:
-                            ck1 = new CKPoint(5, 0);
-                            ck2 = new CKPoint(4, 1);
-                            break;
-                        case 2:
-                            ck1 = new CKPoint(2, 3);
-                            ck2 = new CKPoint(3, 4);
-                            break;
-                        case 3:
-                            ck1 = new CKPoint(5, 2);
-                            ck2 = new CKPoint(4, 3);
-                            break;
-                        case 4:
-                            ck1 = new CKPoint(3, 2);
-                            ck2 = new CKPoint(5, 0);
-                            break;
-                        case 5:
-                            ck1 = new CKPoint(2, 3);
-                            ck2 = new CKPoint(0, 5);
-                            break;
-                        default:
-                            ck1 = new CKPoint(0, 0);
-                            ck2 = new CKPoint(0, 0);
-                            break;
-                    }
-                    temp += 2;
-                    //set appended to player move
-                    pm.BuildMove(ck1);
-                    pm.BuildMove(ck2);
-                    
+                    while (gameForm.waitingToSubmit == false) { }
+                    PlayerMove pm = gameForm.SubmitPlayerMove();          
 
                     IFormatter formatter = new BinaryFormatter();
                     using (MemoryStream stream = new MemoryStream())
