@@ -229,28 +229,28 @@ namespace ClientApplication
                     switch (temp)
                     {
                         case 0:
-                            ck1 = new CKPoint(1, 2);
-                            ck2 = new CKPoint(2, 3);
+                            ck1 = new CKPoint(2, 1);
+                            ck2 = new CKPoint(3, 2);
                             break;
                         case 1:
-                            ck1 = new CKPoint(0, 5);
-                            ck2 = new CKPoint(1, 4);
+                            ck1 = new CKPoint(5, 0);
+                            ck2 = new CKPoint(4, 1);
                             break;
                         case 2:
-                            ck1 = new CKPoint(3, 2);
-                            ck2 = new CKPoint(4, 3);
+                            ck1 = new CKPoint(2, 3);
+                            ck2 = new CKPoint(3, 4);
                             break;
                         case 3:
-                            ck1 = new CKPoint(3, 5);
-                            ck2 = new CKPoint(4, 4);
+                            ck1 = new CKPoint(5, 2);
+                            ck2 = new CKPoint(4, 3);
                             break;
                         case 4:
-                            ck1 = new CKPoint(1, 2);
-                            ck2 = new CKPoint(2, 3);
+                            ck1 = new CKPoint(2, 3);
+                            ck2 = new CKPoint(0, 5);
                             break;
                         case 5:
-                            ck1 = new CKPoint(1, 2);
-                            ck2 = new CKPoint(2, 3);
+                            ck1 = new CKPoint(2, 3);
+                            ck2 = new CKPoint(0, 5);
                             break;
                         default:
                             ck1 = new CKPoint(0, 0);
