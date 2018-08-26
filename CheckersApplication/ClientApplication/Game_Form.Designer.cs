@@ -66,15 +66,17 @@
             this.tbTurn.ReadOnly = true;
             this.tbTurn.Size = new System.Drawing.Size(160, 33);
             this.tbTurn.TabIndex = 6;
-            this.tbTurn.Text = "Not Your Turn";
+            this.tbTurn.Text = "Waiting...";
             // 
             // button1
             // 
-            this.button1.BackColor = System.Drawing.Color.White;
-            this.button1.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.button1.Location = new System.Drawing.Point(107, 121);
+            this.button1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(27)))), ((int)(((byte)(28)))), ((int)(((byte)(33)))));
+            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.button1.Font = new System.Drawing.Font("Impact", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(250)))));
+            this.button1.Location = new System.Drawing.Point(71, 118);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.Size = new System.Drawing.Size(127, 50);
             this.button1.TabIndex = 7;
             this.button1.Text = "Submit";
             this.button1.UseVisualStyleBackColor = false;
@@ -91,11 +93,13 @@
             // 
             // Reset_Move_Button
             // 
-            this.Reset_Move_Button.BackColor = System.Drawing.Color.White;
-            this.Reset_Move_Button.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.Reset_Move_Button.Location = new System.Drawing.Point(107, 150);
+            this.Reset_Move_Button.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(27)))), ((int)(((byte)(28)))), ((int)(((byte)(33)))));
+            this.Reset_Move_Button.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.Reset_Move_Button.Font = new System.Drawing.Font("Impact", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Reset_Move_Button.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(250)))));
+            this.Reset_Move_Button.Location = new System.Drawing.Point(71, 174);
             this.Reset_Move_Button.Name = "Reset_Move_Button";
-            this.Reset_Move_Button.Size = new System.Drawing.Size(75, 23);
+            this.Reset_Move_Button.Size = new System.Drawing.Size(127, 50);
             this.Reset_Move_Button.TabIndex = 8;
             this.Reset_Move_Button.Text = "Reset Move";
             this.Reset_Move_Button.UseVisualStyleBackColor = false;
