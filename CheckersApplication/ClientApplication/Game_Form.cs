@@ -44,15 +44,40 @@ namespace ClientApplication {
             }
         }
 
-        private Button CreatePiece(Point pos) {
+        private Button CreatePiece(Point pos, CKPoint point, CheckerPieces Ptype) {
             Button piece = new Button();
             piece.TabStop = false;
             piece.FlatStyle = FlatStyle.Flat;
             piece.FlatAppearance.BorderSize = 0;
             piece.Width = 64;
             piece.Height = 64;
-            piece.Image = Properties.Resources.Red_Piece;
             piece.Location = pos;
+            piece.Tag = point;
+            switch (Ptype){
+                case CheckerPieces.Red:
+                    piece.Image = Properties.Resources.Red_Piece;
+                    piece.Click += new EventHandler(Redbutton_Click);
+                    break;
+                case CheckerPieces.RedKing:
+                    piece.Image = Properties.Resources.Red_Piece;
+                    piece.Click += new EventHandler(RedKingbutton_Click);
+                    break;
+                case CheckerPieces.Black:
+                    piece.Image = Properties.Resources.Red_Piece;
+                    piece.Click += new EventHandler(Blackbutton_Click);
+                    break;
+                case CheckerPieces.BlackKing:
+                    piece.Image = Properties.Resources.Red_Piece;
+                    piece.Click += new EventHandler(BlackKingbutton_Click);
+                    break;
+                case CheckerPieces.Empty:
+                    //piece.Image = Properties.Resources.Red_Piece;
+                    piece.Click += new EventHandler(Emptybutton_Click);
+                    break;
+                default:
+                    break;
+            }
+
             this.BeginInvoke((Action)delegate () { this.Controls.Add(piece); piece.BringToFront(); });
             return piece;
         }
@@ -119,11 +144,7 @@ namespace ClientApplication {
             CheckerPieces[,] gameBoard = game.GetGameBoard();
             for (int i = 0; i < 8; i++) {
                 for (int j = 0; j < 8; j++) {
-                    if (gameBoard[i,j] == CheckerPieces.Red) {
-                        activePieces.Add(CreatePiece(boardPositions[i,j]));
-                    } else if (gameBoard[i, j] == CheckerPieces.Black) {
-                        activePieces.Add(CreatePiece(boardPositions[i, j]));
-                    }
+                    activePieces.Add(CreatePiece(boardPositions[i, j], new CKPoint(i, j), gameBoard[i, j]));
                 }
             }
         }
@@ -155,6 +176,44 @@ namespace ClientApplication {
         private void button2_Click(object sender, EventArgs e)
         {
             UpdateBoard(new GameBoard());
+        }
+
+
+
+        protected void Redbutton_Click(object sender, EventArgs e)
+        {
+            Button button = sender as Button;
+            CKPoint point = (CKPoint)button.Tag;
+            System.Diagnostics.Debug.WriteLine("Point: " + point.GetRow() + "," + point.GetColumn());
+            // identify which button was clicked and perform necessary actions
+        }
+        protected void RedKingbutton_Click(object sender, EventArgs e)
+        {
+            Button button = sender as Button;
+            CKPoint point = (CKPoint)button.Tag;
+            System.Diagnostics.Debug.WriteLine("Point: " + point.GetRow() + "," + point.GetColumn());
+            // identify which button was clicked and perform necessary actions
+        }
+        protected void Blackbutton_Click(object sender, EventArgs e)
+        {
+            Button button = sender as Button;
+            CKPoint point = (CKPoint)button.Tag;
+            System.Diagnostics.Debug.WriteLine("Point: " + point.GetRow() + "," + point.GetColumn());
+            // identify which button was clicked and perform necessary actions
+        }
+        protected void BlackKingbutton_Click(object sender, EventArgs e)
+        {
+            Button button = sender as Button;
+            CKPoint point = (CKPoint)button.Tag;
+            System.Diagnostics.Debug.WriteLine("Point: " + point.GetRow() + "," + point.GetColumn());
+            // identify which button was clicked and perform necessary actions
+        }
+        protected void Emptybutton_Click(object sender, EventArgs e)
+        {
+            Button button = sender as Button;
+            CKPoint point = (CKPoint)button.Tag;
+            System.Diagnostics.Debug.WriteLine("Point: " + point.GetRow() + "," + point.GetColumn());
+            // identify which button was clicked and perform necessary actions
         }
     }
 }
