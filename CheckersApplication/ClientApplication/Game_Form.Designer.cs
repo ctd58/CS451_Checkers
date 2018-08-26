@@ -28,6 +28,7 @@
             this.tbTurn = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
             this.Board = new System.Windows.Forms.PictureBox();
+            this.Reset_Move_Button = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.Board)).BeginInit();
             this.SuspendLayout();
             // 
@@ -88,12 +89,25 @@
             this.Board.TabIndex = 5;
             this.Board.TabStop = false;
             // 
+            // Reset_Move_Button
+            // 
+            this.Reset_Move_Button.BackColor = System.Drawing.Color.White;
+            this.Reset_Move_Button.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.Reset_Move_Button.Location = new System.Drawing.Point(107, 150);
+            this.Reset_Move_Button.Name = "Reset_Move_Button";
+            this.Reset_Move_Button.Size = new System.Drawing.Size(75, 23);
+            this.Reset_Move_Button.TabIndex = 8;
+            this.Reset_Move_Button.Text = "Reset Move";
+            this.Reset_Move_Button.UseVisualStyleBackColor = false;
+            this.Reset_Move_Button.Click += new System.EventHandler(this.Reset_Move_Button_Click);
+            // 
             // Game_Form
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(27)))), ((int)(((byte)(28)))), ((int)(((byte)(33)))));
             this.ClientSize = new System.Drawing.Size(944, 821);
+            this.Controls.Add(this.Reset_Move_Button);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.tbTurn);
             this.Controls.Add(this.tbConsole);
@@ -115,5 +129,6 @@
         private System.Windows.Forms.TextBox tbTurn;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.PictureBox Board;
+        private System.Windows.Forms.Button Reset_Move_Button;
     }
 }
