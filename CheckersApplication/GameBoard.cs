@@ -25,7 +25,7 @@ public class GameBoard
     public GameBoard() {
 
         MakeBoard();
-        //PrintBoard(); 
+        PrintBoard(); 
 	}
     #endregion
 
@@ -113,7 +113,6 @@ public class GameBoard
 
         }
     }
-
     public void PrintBoard() {
         int count = 1;
         foreach (CheckerPieces checkerPiece in gameBoard) {
