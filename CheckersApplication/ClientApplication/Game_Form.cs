@@ -20,6 +20,7 @@ namespace ClientApplication {
         Client client;
         Task clientTask;
         public bool waitingToSubmit = false;
+        public string ipAddress;
 
         private List<Button> activePieces = new List<Button>();
         private Point[,] boardPositions = new Point[8, 8];
@@ -31,6 +32,15 @@ namespace ClientApplication {
             this.host = host;
             FillBoardPositions();
             playerMove = new PlayerMove();
+        }
+
+        public Game_Form(bool host, string ip)
+        {
+            InitializeComponent();
+            this.host = host;
+            FillBoardPositions();
+            playerMove = new PlayerMove();
+            ipAddress = ip;
         }
 
         private void FillBoardPositions() {
@@ -170,7 +180,7 @@ namespace ClientApplication {
         }
 
         private void RunClient() {
-            client = new Client(this);
+            client = new Client(this, ipAddress);
             client.ConnectToServer(); //2. START TRYING TO CONNECT TO SERVER
         }
 
