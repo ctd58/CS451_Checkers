@@ -1,0 +1,10 @@
+C:\Users\whatb\Documents\CS-451-002\CS451_Checkers\Checkers\Checkers\bin\Debug\Checkers.exe.config
+C:\Users\whatb\Documents\CS-451-002\CS451_Checkers\Checkers\Checkers\bin\Debug\Checkers.exe
+C:\Users\whatb\Documents\CS-451-002\CS451_Checkers\Checkers\Checkers\bin\Debug\Checkers.pdb
+C:\Users\whatb\Documents\CS-451-002\CS451_Checkers\Checkers\Checkers\obj\Debug\Checkers.csprojAssemblyReference.cache
+C:\Users\whatb\Documents\CS-451-002\CS451_Checkers\Checkers\Checkers\obj\Debug\Checkers.Properties.Resources.resources
+C:\Users\whatb\Documents\CS-451-002\CS451_Checkers\Checkers\Checkers\obj\Debug\Checkers.csproj.GenerateResource.cache
+C:\Users\whatb\Documents\CS-451-002\CS451_Checkers\Checkers\Checkers\obj\Debug\Checkers.csproj.CoreCompileInputs.cache
+C:\Users\whatb\Documents\CS-451-002\CS451_Checkers\Checkers\Checkers\obj\Debug\Checkers.exe
+C:\Users\whatb\Documents\CS-451-002\CS451_Checkers\Checkers\Checkers\obj\Debug\Checkers.pdb
+C:\Users\whatb\Documents\CS-451-002\CS451_Checkers\Checkers\Checkers\obj\Debug\Checkers.Main_Menu_Form.resources
