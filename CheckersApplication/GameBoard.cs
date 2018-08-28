@@ -272,6 +272,9 @@ public class GameBoard
                 gameBoard[middleRow, middleColumn] = CheckerPieces.Empty;
                 gameBoard[point.GetRow(), point.GetColumn()] = piece;
             }
+            else {
+                return false;
+            }
 
             fromPoint = point; // Make the point we just moved to the new fromPoint for the next move
         }
@@ -287,6 +290,10 @@ public class GameBoard
         }
 
         return true;
+    }
+
+    CheckerPieces SetPieceFromPoint(CheckerPieces piece, CKPoint point) {
+        return gameBoard[point.GetRow(), point.GetColumn()];
     }
     #endregion
 }
