@@ -104,13 +104,13 @@
     <None Include="Resources\Red_Piece_King.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Black_Piece.png" />
+    <None Include="Resources\Checker_Board.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Black_Piece_King.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Checker_Board.png" />
+    <None Include="Resources\Black_Piece.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
