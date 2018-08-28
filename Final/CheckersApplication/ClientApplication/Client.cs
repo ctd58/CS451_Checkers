@@ -44,6 +44,16 @@ namespace ClientApplication
             //gameForm.SetOutputBox("Client Succesfully Created...");
         }
 
+        public Client(Game_Form game, string ip)
+        {
+            currentGame = new ClientCheckersGame(game);
+            gameForm = game;
+            //output = game.GetOutputBox();
+            turnText = game.GetTurnBox();
+            ipAddress = ip;
+            //gameForm.SetOutputBox("Client Succesfully Created...");
+        }
+
         public GameBoard GetBoard() {
             return currentGame.GetGameBoard();
         }
@@ -61,7 +71,7 @@ namespace ClientApplication
                     // Change IPAddress.Loopback to a remote IP to connect to a remote host.
                     //gameForm.SetOutputBox("Enter IP Address");
                     //ipAddress = output.ReadLine();
-                    ipAddress = "192.168.1.6";
+                    //ipAddress = "10.250.123.157";
                     //Would put a User input here to get IP address
                     //IPAddress ServerIP = IPAddress.Parse(ipAddress);
                     //output.WriteLine(ServerIP);
@@ -77,6 +87,10 @@ namespace ClientApplication
                             break;
                         }
                     }
+
+                    if (ipAddress != null)
+                        ServerIP = IPAddress.Parse(ipAddress);
+
                     ClientSocket.Connect(ServerIP, PORT);
                 }
                 catch (SocketException)
