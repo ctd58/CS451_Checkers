@@ -1,6 +1,6 @@
 Open the Checkers Project Solution with Visual Studio 2017
 
-Right click on the solution, and click Build solution
+Right click on the entire solution, and click Build solution
 
 Navigate to CheckersApplication/bin/debug/ and open up two client.exe's
 
